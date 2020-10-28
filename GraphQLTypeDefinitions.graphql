@@ -1,0 +1,13 @@
+### THIS FILE IS AUTO GENERATED
+
+type Query {
+  ping: Boolean
+}
+
+type Mutation {
+  ping: Boolean
+}
+
+type Subscription {
+  count(to: Int!): String
+}

@@ -1,0 +1,55 @@
+diff --git a/node_modules/graphiql/dist/components/GraphiQL.d.ts b/node_modules/graphiql/dist/components/GraphiQL.d.ts
+index f099a53..ad69234 100644
+--- a/node_modules/graphiql/dist/components/GraphiQL.d.ts
++++ b/node_modules/graphiql/dist/components/GraphiQL.d.ts
+@@ -33,6 +33,7 @@ export declare type FetcherResult = {
+ export declare type Fetcher = (graphQLParams: FetcherParams, opts?: FetcherOpts) => Promise<FetcherResult> | Observable<FetcherResult>;
+ export declare type GraphiQLProps = {
+     fetcher: Fetcher;
++    additionalButtons: React.ReactElement[];
+     schema?: GraphQLSchema;
+     query?: string;
+     variables?: string;
+diff --git a/node_modules/graphiql/dist/components/GraphiQL.js b/node_modules/graphiql/dist/components/GraphiQL.js
+index d7784b7..8252f93 100644
+--- a/node_modules/graphiql/dist/components/GraphiQL.js
++++ b/node_modules/graphiql/dist/components/GraphiQL.js
+@@ -564,7 +564,10 @@ var GraphiQL = (function (_super) {
+             react_1.default.createElement(ToolbarButton_1.ToolbarButton, { onClick: this.handlePrettifyQuery, title: "Prettify Query (Shift-Ctrl-P)", label: "Prettify" }),
+             react_1.default.createElement(ToolbarButton_1.ToolbarButton, { onClick: this.handleMergeQuery, title: "Merge Query (Shift-Ctrl-M)", label: "Merge" }),
+             react_1.default.createElement(ToolbarButton_1.ToolbarButton, { onClick: this.handleCopyQuery, title: "Copy Query (Shift-Ctrl-C)", label: "Copy" }),
+-            react_1.default.createElement(ToolbarButton_1.ToolbarButton, { onClick: this.handleToggleHistory, title: "Show History", label: "History" })));
++            react_1.default.createElement(ToolbarButton_1.ToolbarButton, { onClick: this.handleToggleHistory, title: "Show History", label: "History" }),
++            ...this.props.additionalButtons
++            ));
++            
+         var footer = find_1.default(children, function (child) {
+             return isChildComponentType(child, GraphiQL.Footer);
+         });
+diff --git a/node_modules/graphiql/esm/components/GraphiQL.d.ts b/node_modules/graphiql/esm/components/GraphiQL.d.ts
+index f099a53..ad69234 100644
+--- a/node_modules/graphiql/esm/components/GraphiQL.d.ts
++++ b/node_modules/graphiql/esm/components/GraphiQL.d.ts
+@@ -33,6 +33,7 @@ export declare type FetcherResult = {
+ export declare type Fetcher = (graphQLParams: FetcherParams, opts?: FetcherOpts) => Promise<FetcherResult> | Observable<FetcherResult>;
+ export declare type GraphiQLProps = {
+     fetcher: Fetcher;
++    additionalButtons: React.ReactElement[];
+     schema?: GraphQLSchema;
+     query?: string;
+     variables?: string;
+diff --git a/node_modules/graphiql/esm/components/GraphiQL.js b/node_modules/graphiql/esm/components/GraphiQL.js
+index 044eb2c..c674055 100644
+--- a/node_modules/graphiql/esm/components/GraphiQL.js
++++ b/node_modules/graphiql/esm/components/GraphiQL.js
+@@ -558,7 +558,9 @@ var GraphiQL = (function (_super) {
+             React.createElement(ToolbarButton, { onClick: this.handlePrettifyQuery, title: "Prettify Query (Shift-Ctrl-P)", label: "Prettify" }),
+             React.createElement(ToolbarButton, { onClick: this.handleMergeQuery, title: "Merge Query (Shift-Ctrl-M)", label: "Merge" }),
+             React.createElement(ToolbarButton, { onClick: this.handleCopyQuery, title: "Copy Query (Shift-Ctrl-C)", label: "Copy" }),
+-            React.createElement(ToolbarButton, { onClick: this.handleToggleHistory, title: "Show History", label: "History" })));
++            React.createElement(ToolbarButton, { onClick: this.handleToggleHistory, title: "Show History", label: "History" }),
++            ...this.props.additionalButtons ? this.props.additionalButtons : []
++            ));
+         var footer = find(children, function (child) {
+             return isChildComponentType(child, GraphiQL.Footer);
+         });
