@@ -90,6 +90,7 @@ const httpFetcher: Fetcher = (graphQLParams) => {
 };
 
 const defaultQuery = `
+
 subscription CountSubscription {
   count(to: 10)
 }
@@ -98,6 +99,19 @@ mutation PingMutation {
 }
 query PingQuery {
   ping
+}
+
+query DeferTestQuery {
+  deferTest {
+    name
+    ... on GraphQLDeferTest @defer {
+      deferThisField
+    }
+  }
+}
+
+query StreamTestQuery {
+  streamTest @stream(initialCount: 2)
 }
 `;
 

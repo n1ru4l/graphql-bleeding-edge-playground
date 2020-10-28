@@ -1,11 +1,32 @@
 import {
   GraphQLBoolean,
   GraphQLInt,
+  GraphQLList,
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLSchema,
   GraphQLString,
 } from "graphql";
+
+const sleep = (t = 1000) => new Promise((res) => setTimeout(res, t));
+
+const GraphQLDeferTest = new GraphQLObjectType({
+  name: "GraphQLDeferTest",
+  fields: {
+    name: {
+      type: GraphQLString,
+      resolve: () => "Peter Parker",
+    },
+    deferThisField: {
+      type: GraphQLString,
+      resolve: async () => {
+        await sleep(5000);
+
+        return "Took a long time ,he?";
+      },
+    },
+  },
+});
 
 const Query = new GraphQLObjectType({
   name: "Query",
@@ -13,6 +34,19 @@ const Query = new GraphQLObjectType({
     ping: {
       type: GraphQLBoolean,
       resolve: () => true,
+    },
+    deferTest: {
+      type: GraphQLDeferTest,
+      resolve: () => ({}),
+    },
+    streamTest: {
+      type: GraphQLList(GraphQLString),
+      resolve: async function* () {
+        for (const item of ["Hi", "My", "Friend"]) {
+          yield item;
+          await sleep(1000);
+        }
+      },
     },
   },
 });
@@ -26,8 +60,6 @@ const Mutation = new GraphQLObjectType({
     },
   },
 });
-
-const sleep = (t = 1000) => new Promise((res) => setTimeout(res, t));
 
 const Subscription = new GraphQLObjectType({
   name: "Subscription",

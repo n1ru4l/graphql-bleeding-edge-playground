@@ -15,6 +15,7 @@
     "@types/react-dom": "^16.9.8",
     "fetch-multipart-graphql": "^2.1.0",
     "graphiql": "1.0.6",
+    "patch-package": "^6.2.2",
     "prettier": "^2.1.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -36,6 +37,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "postinstall": "patch-package",
     "server:start": "ts-node-dev --project server/tsconfig.json --no-deps server/main.ts",
     "write-schema": "ts-node --project ./server/tsconfig.json  ./scripts/write-graphql-schema.ts"
   },
@@ -56,5 +58,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "resolutions": {
+    "graphql": "^15.4.0"
   }
 }

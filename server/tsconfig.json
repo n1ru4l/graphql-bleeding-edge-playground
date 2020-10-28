@@ -13,5 +13,6 @@
     "outDir": "./../server-build",
     "typeRoots": ["../node_modules/@types", "./@types"]
   },
-  "include": ["./"]
+  "include": ["./"],
+  "exclude": ["node_modules"]
 }
