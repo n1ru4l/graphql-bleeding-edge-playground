@@ -8,7 +8,7 @@ Showcasing the following features with Fetcher implementations on GraphiQL:
 - Mutation (HTTP, HTTP-Multipart, WebSocket)
 - Query with @defer (HTTP-Multipart, WebSocket)
 - Query with @stream (HTTP-Multipart, WebSocket)
-- Live Query (WebSocket)
+- Query with @live (WebSocket)
 
 # Setup instructions
 
