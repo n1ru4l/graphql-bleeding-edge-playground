@@ -5,8 +5,6 @@ import { createClient } from "graphql-ws";
 import fetchMultipart from "fetch-multipart-graphql";
 import { ToolbarButton } from "graphiql/dist/components/ToolbarButton";
 
-console.log(DefaultGraphiQL);
-
 const wsClient = createClient({
   url: "ws://localhost:4000/graphql",
 });
@@ -50,9 +48,7 @@ const wsFetcher: Fetcher = (graphQLParams) => {
           variables: graphQLParams || {},
         },
         {
-          next: (...args) => {
-            sink.next(...args);
-          },
+          next: sink.next,
           complete: sink.complete,
           error: sink.error,
         }
@@ -69,6 +65,8 @@ const httpFetcher: Fetcher = (graphQLParams) => {
     subscribe: (...args: SubscribeArguments) => {
       const sink = getSinkFromArgs(args);
 
+      const isIntrospectionQuery = args.length === 3;
+
       fetchMultipart("http://localhost:4000/graphql", {
         method: "POST",
         body: JSON.stringify(graphQLParams),
@@ -76,8 +74,9 @@ const httpFetcher: Fetcher = (graphQLParams) => {
           "content-type": "application/json",
         },
         onNext: (parts) => {
-          // TODO: once we have defer and stream we need to add merge logic in here :)
-          sink.next(parts[0]);
+          // Introspection is broken if we return a array instead of a single item.
+          // TODO: This should be addressed inside GraphiQL
+          sink.next(isIntrospectionQuery ? parts[0] : parts);
         },
         onError: sink.error,
         onComplete: sink.complete,
@@ -136,9 +135,7 @@ export const GraphiQL = () => {
             onClick={() =>
               setTransport((transport) => (transport === "ws" ? "http" : "ws"))
             }
-          >
-            keke
-          </ToolbarButton>,
+          />,
         ]}
       >
         <DefaultGraphiQL.Footer>
