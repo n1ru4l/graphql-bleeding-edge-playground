@@ -134,6 +134,11 @@ query DeferTestQuery {
 query StreamTestQuery {
   streamTest @stream(initialCount: 2)
 }
+
+# only works with the ws transport :)
+query greetings @live {
+  greetings
+}
 `;
 
 export const GraphiQL = () => {

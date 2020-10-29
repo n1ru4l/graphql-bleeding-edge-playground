@@ -1,7 +1,20 @@
 ### THIS FILE IS AUTO GENERATED
 
+"""
+Instruction for establishing a live connection that is updated once the underlying data changes.
+"""
+directive @live on QUERY
+
 type Query {
   ping: Boolean
+  deferTest: GraphQLDeferTest
+  streamTest: [String]
+  greetings: [String]
+}
+
+type GraphQLDeferTest {
+  name: String
+  deferThisField: String
 }
 
 type Mutation {

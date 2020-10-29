@@ -6,7 +6,9 @@ import {
   GraphQLObjectType,
   GraphQLSchema,
   GraphQLString,
+  specifiedDirectives,
 } from "graphql";
+import { GraphQLLiveDirective } from "@n1ru4l/graphql-live-query";
 
 const sleep = (t = 1000) => new Promise((res) => setTimeout(res, t));
 
@@ -47,6 +49,10 @@ const Query = new GraphQLObjectType({
           await sleep(1000);
         }
       },
+    },
+    greetings: {
+      type: GraphQLList(GraphQLString),
+      resolve: (_, __, context) => context.greetings,
     },
   },
 });
@@ -93,4 +99,5 @@ export const schema = new GraphQLSchema({
   query: Query,
   mutation: Mutation,
   subscription: Subscription,
+  directives: [...specifiedDirectives, GraphQLLiveDirective],
 });
