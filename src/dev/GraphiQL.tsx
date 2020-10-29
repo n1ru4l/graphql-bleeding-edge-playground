@@ -37,34 +37,37 @@ const getSinkFromArgs = (args: SubscribeArguments): Sink => {
   } as Sink;
 };
 
-const wsFetcher: Fetcher = (graphQLParams) => {
-  return {
+const httpFetcher: Fetcher = (graphQLParams) =>
+  ({
     subscribe: (...args: SubscribeArguments) => {
+      const abortController = new AbortController();
       const sink = getSinkFromArgs(args);
-      const unsubscribe = wsClient.subscribe(
-        {
-          ...graphQLParams,
-          // graphql-ws throws otherwise...
-          variables: graphQLParams || {},
+
+      fetch("http://localhost:4000/graphql", {
+        method: "POST",
+        body: JSON.stringify(graphQLParams),
+        headers: {
+          "content-type": "application/json",
         },
-        {
-          next: sink.next,
-          complete: sink.complete,
-          error: sink.error,
-        }
-      );
+        signal: abortController.signal,
+      })
+        .then((res) => res.json())
+        .then((res: unknown) => {
+          sink.next(res);
+          sink.complete();
+        })
+        .catch((err) => sink.error(err));
 
-      return { unsubscribe };
+      return {
+        unsubscribe: () => abortController.abort(),
+      };
     },
-    // @ts-ignore
-  } as any;
-};
+  } as any);
 
-const httpFetcher: Fetcher = (graphQLParams) => {
-  return {
+const httpMultipartFetcher: Fetcher = (graphQLParams) =>
+  ({
     subscribe: (...args: SubscribeArguments) => {
       const sink = getSinkFromArgs(args);
-
       const isIntrospectionQuery = args.length === 3;
 
       fetchMultipart("http://localhost:4000/graphql", {
@@ -84,9 +87,28 @@ const httpFetcher: Fetcher = (graphQLParams) => {
 
       return { unsubscribe: () => undefined };
     },
-    // @ts-ignore
-  } as any;
-};
+  } as any);
+
+const wsFetcher: Fetcher = (graphQLParams) =>
+  ({
+    subscribe: (...args: SubscribeArguments) => {
+      const sink = getSinkFromArgs(args);
+      const unsubscribe = wsClient.subscribe(
+        {
+          ...graphQLParams,
+          // graphql-ws throws otherwise...
+          variables: graphQLParams || {},
+        },
+        {
+          next: sink.next,
+          complete: sink.complete,
+          error: sink.error,
+        }
+      );
+
+      return { unsubscribe };
+    },
+  } as any);
 
 const defaultQuery = `
 
@@ -115,9 +137,16 @@ query StreamTestQuery {
 `;
 
 export const GraphiQL = () => {
-  const [transport, setTransport] = React.useState("http" as "ws" | "http");
+  const [transport, setTransport] = React.useState(
+    "http" as "http" | "multipart-http" | "ws"
+  );
 
-  const fetcher = transport === "ws" ? wsFetcher : httpFetcher;
+  const fetcher =
+    transport === "ws"
+      ? wsFetcher
+      : transport === "multipart-http"
+      ? httpMultipartFetcher
+      : httpFetcher;
 
   return (
     <div style={{ height: "100vh" }}>
@@ -127,13 +156,27 @@ export const GraphiQL = () => {
         additionalButtons={[
           <ToolbarButton
             title={
-              transport === "ws" ? "Use HTTP Transport" : "Use WS Transport"
+              transport === "ws"
+                ? "Use HTTP Transport"
+                : transport === "http"
+                ? "Use HTTP Multipart Transport"
+                : "Use WS Transport"
             }
             label={
-              transport === "ws" ? "Use HTTP Transport" : "Use WS Transport"
+              transport === "ws"
+                ? "Use HTTP Transport"
+                : transport === "http"
+                ? "Use HTTP Multipart Transport"
+                : "Use WS Transport"
             }
             onClick={() =>
-              setTransport((transport) => (transport === "ws" ? "http" : "ws"))
+              setTransport((transport) =>
+                transport === "ws"
+                  ? "http"
+                  : transport === "http"
+                  ? "multipart-http"
+                  : "ws"
+              )
             }
           />,
         ]}
