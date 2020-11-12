@@ -43,7 +43,6 @@ const httpMultipartFetcher: Fetcher = (graphQLParams) =>
     subscribe: (...args: SubscribeArguments) => {
       const abortController = new AbortController();
       const sink = getSinkFromArgs(args);
-      const isIntrospectionQuery = args.length === 3;
 
       try {
         (async () => {
