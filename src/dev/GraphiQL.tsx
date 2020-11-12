@@ -2,7 +2,7 @@ import React, { ComponentProps } from "react";
 import { GraphiQL as DefaultGraphiQL } from "graphiql";
 import "graphiql/graphiql.css";
 import { createClient } from "graphql-ws";
-import fetchMultipart from "fetch-multipart-graphql";
+import { meros } from "meros/browser";
 import { ToolbarButton } from "graphiql/dist/components/ToolbarButton";
 import "./custom-graphiql.css";
 
@@ -41,25 +41,42 @@ const getSinkFromArgs = (args: SubscribeArguments): Sink => {
 const httpMultipartFetcher: Fetcher = (graphQLParams) =>
   ({
     subscribe: (...args: SubscribeArguments) => {
+      const abortController = new AbortController();
       const sink = getSinkFromArgs(args);
       const isIntrospectionQuery = args.length === 3;
 
-      fetchMultipart("http://localhost:4000/graphql", {
-        method: "POST",
-        body: JSON.stringify(graphQLParams),
-        headers: {
-          "content-type": "application/json",
-        },
-        onNext: (parts) => {
-          // Introspection is broken if we return a array instead of a single item.
-          // TODO: This should be addressed inside GraphiQL
-          sink.next(isIntrospectionQuery ? parts[0] : parts);
-        },
-        onError: sink.error,
-        onComplete: sink.complete,
-      });
+      try {
+        (async () => {
+          const response = await fetch("http://localhost:4000/graphql", {
+            method: "POST",
+            body: JSON.stringify(graphQLParams),
+            headers: {
+              "accept": "application/json, multipart/mixed",
+              "content-type": "application/json",
+            },
+            signal: abortController.signal,
+          });
 
-      return { unsubscribe: () => undefined };
+          const patches = await meros(response);
+          // @ts-ignore we need to ignore coz typescript don't understand this.
+          if (patches[Symbol.asyncIterator] < 'u') {
+            for await (const patch of patches) {
+              sink.next(patch);
+            }
+          } else {
+              // We assume its json here
+              sink.next(await (patches as Response).json());
+          }
+
+          sink.complete();
+        })();
+      } catch(e) {
+        sink.error(e);
+      }
+
+      return {
+        unsubscribe: () => abortController.abort(),
+       };
     },
   } as any);
 

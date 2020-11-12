@@ -12,7 +12,7 @@
     "@types/jest": "^26.0.15",
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
-    "fetch-multipart-graphql": "^2.1.0",
+    "meros": "1.0.0-beta.5",
     "graphiql": "1.0.6",
     "patch-package": "^6.2.2",
     "prettier": "^2.1.2",
