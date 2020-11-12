@@ -44,34 +44,30 @@ const httpMultipartFetcher: Fetcher = (graphQLParams) =>
       const abortController = new AbortController();
       const sink = getSinkFromArgs(args);
 
-      try {
-        (async () => {
-          const response = await fetch("http://localhost:4000/graphql", {
-            method: "POST",
-            body: JSON.stringify(graphQLParams),
-            headers: {
-              "accept": "application/json, multipart/mixed",
-              "content-type": "application/json",
-            },
-            signal: abortController.signal,
-          });
+      (async () => {
+        const response = await fetch("http://localhost:4000/graphql", {
+          method: "POST",
+          body: JSON.stringify(graphQLParams),
+          headers: {
+            "accept": "application/json, multipart/mixed",
+            "content-type": "application/json",
+          },
+          signal: abortController.signal,
+        });
 
-          const patches = await meros(response);
-          // @ts-ignore we need to ignore coz typescript don't understand this.
-          if (patches[Symbol.asyncIterator] < 'u') {
-            for await (const patch of patches) {
-              sink.next(patch);
-            }
-          } else {
-              // We assume its json here
-              sink.next(await (patches as Response).json());
+        const patches = await meros(response);
+        // @ts-ignore we need to ignore coz typescript don't understand this.
+        if (patches[Symbol.asyncIterator] !== undefined) {
+          for await (const patch of patches) {
+            sink.next(patch);
           }
+        } else {
+            // We assume its json here
+            sink.next(await (patches as Response).json());
+        }
 
-          sink.complete();
-        })();
-      } catch(e) {
-        sink.error(e);
-      }
+        sink.complete();
+      })().catch(sink.error);
 
       return {
         unsubscribe: () => abortController.abort(),
