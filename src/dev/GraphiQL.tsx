@@ -3,6 +3,9 @@ import { GraphiQL as DefaultGraphiQL } from "graphiql";
 import "graphiql/graphiql.css";
 import { createClient } from "graphql-ws";
 import { meros } from "meros/browser";
+import { Subscription as SSESubscription } from "sse-z";
+import { isLiveQueryOperationDefinitionNode } from "@n1ru4l/graphql-live-query";
+import { DefinitionNode, OperationDefinitionNode, parse } from "graphql";
 import { ToolbarButton } from "graphiql/dist/components/ToolbarButton";
 import "./custom-graphiql.css";
 
@@ -44,11 +47,47 @@ const isAsyncIterable = (input: unknown): input is AsyncIterable<unknown> => {
   );
 };
 
+const isOperationDefinitionNode = (
+  definition: DefinitionNode
+): definition is OperationDefinitionNode =>
+  definition.kind === "OperationDefinition";
+
 const httpMultipartFetcher: Fetcher = (graphQLParams) =>
   ({
     subscribe: (...args: SubscribeArguments) => {
       const abortController = new AbortController();
       const sink = getSinkFromArgs(args);
+
+      const parsedDocument = parse(graphQLParams.query);
+      const operationName = graphQLParams.operationName;
+
+      const documentNode =
+        parsedDocument.definitions
+          .filter(isOperationDefinitionNode)
+          .find((def) => def.name?.value === operationName) ?? null;
+
+      if (
+        documentNode!.operation === "subscription" ||
+        isLiveQueryOperationDefinitionNode(documentNode!)
+      ) {
+        const searchParams: Record<string, string> = {
+          operationName: graphQLParams.operationName,
+          query: graphQLParams.query,
+        };
+        if (graphQLParams.variables) {
+          searchParams.variables = JSON.stringify(graphQLParams.variables);
+        }
+
+        return new SSESubscription({
+          url: "http://localhost:4000/graphql",
+          searchParams,
+          onNext: (value) => {
+            sink.next(JSON.parse(value));
+          },
+          onError: sink.error,
+          onComplete: sink.complete,
+        });
+      }
 
       (async () => {
         const patches = await fetch("http://localhost:4000/graphql", {
