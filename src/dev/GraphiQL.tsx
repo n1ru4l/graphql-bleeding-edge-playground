@@ -38,6 +38,12 @@ const getSinkFromArgs = (args: SubscribeArguments): Sink => {
   } as Sink;
 };
 
+const isAsyncIterable = (input: unknown): input is AsyncIterable<unknown> => {
+  return (
+    typeof input === "object" && input != null && Symbol.asyncIterator in input
+  );
+};
+
 const httpMultipartFetcher: Fetcher = (graphQLParams) =>
   ({
     subscribe: (...args: SubscribeArguments) => {
@@ -49,21 +55,20 @@ const httpMultipartFetcher: Fetcher = (graphQLParams) =>
           method: "POST",
           body: JSON.stringify(graphQLParams),
           headers: {
-            "accept": "application/json, multipart/mixed",
+            accept: "application/json, multipart/mixed",
             "content-type": "application/json",
           },
           signal: abortController.signal,
         });
 
         const patches = await meros(response);
-        // @ts-ignore we need to ignore coz typescript don't understand this.
-        if (patches[Symbol.asyncIterator] !== undefined) {
+        if (isAsyncIterable(patches)) {
           for await (const patch of patches) {
             sink.next(patch);
           }
         } else {
-            // We assume its json here
-            sink.next(await (patches as Response).json());
+          // We assume its json here
+          sink.next(await (patches as Response).json());
         }
 
         sink.complete();
@@ -71,7 +76,7 @@ const httpMultipartFetcher: Fetcher = (graphQLParams) =>
 
       return {
         unsubscribe: () => abortController.abort(),
-       };
+      };
     },
   } as any);
 
