@@ -5,6 +5,8 @@ import {
   parse,
   OperationDefinitionNode,
   DefinitionNode,
+  validate,
+  ExecutionArgs,
 } from "graphql";
 import { createServer } from "graphql-ws";
 import { InMemoryLiveQueryStore } from "@n1ru4l/in-memory-live-query-store";
@@ -57,6 +59,8 @@ const getMainOperationDefinition = (
   return definitionNode;
 };
 
+const validationRules = [...specifiedRules, NoLiveMixedWithDeferStreamRule];
+
 app.use(cors());
 app.use(express.json());
 app.use("/graphql", async (req, res) => {
@@ -80,7 +84,7 @@ app.use("/graphql", async (req, res) => {
     schema,
     contextFactory: () => context,
     execute: liveQueryStore.execute,
-    validationRules: [...specifiedRules, NoLiveMixedWithDeferStreamRule],
+    validationRules,
   });
 
   // processRequest returns one of three types of results depending on how the server should respond
@@ -164,10 +168,28 @@ const server = app.listen(PORT, () => {
 
 const websocketGraphQLServer = createServer(
   {
-    schema,
     execute: liveQueryStore.execute,
     subscribe,
-    context,
+    onSubscribe: (_, msg) => {
+      const args: ExecutionArgs = {
+        schema,
+        operationName: msg.payload.operationName,
+        document:
+          typeof msg.payload.query === "object"
+            ? msg.payload.query
+            : parse(msg.payload.query),
+        variableValues: msg.payload.variables,
+        contextValue: context,
+      };
+
+      // don't forget to validate when returning custom execution args!
+      const errors = validate(args.schema, args.document, validationRules);
+      if (errors.length > 0) {
+        return errors; // return `GraphQLError[]` to send `ErrorMessage` and stop subscription
+      }
+
+      return args;
+    },
   },
   {
     server,
