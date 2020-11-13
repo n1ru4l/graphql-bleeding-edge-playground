@@ -16,13 +16,7 @@ Showcasing the following features with Fetcher implementations on GraphiQL:
 
 2. Make sure you have yarn and node v14 installed
 
-3. Run the `bootstrap.sh` script
-
-```
-./bootstrap.sh
-```
-
-The bootstrap script will build `express-graphql` and `graphql-js` and link everything.
+3. Run `yarn install`
 
 # Usage
 

@@ -1,6 +1,0 @@
-[submodule "express-graphql"]
-	path = express-graphql
-	url = https://github.com/robrichard/express-graphql
-[submodule "graphql-js"]
-	path = graphql-js
-	url = https://github.com/graphql/graphql-js
