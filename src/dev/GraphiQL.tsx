@@ -4,6 +4,7 @@ import "graphiql/graphiql.css";
 import { createClient } from "graphql-ws";
 import fetchMultipart from "fetch-multipart-graphql";
 import { ToolbarButton } from "graphiql/dist/components/ToolbarButton";
+import "./custom-graphiql.css";
 
 const wsClient = createClient({
   url: "ws://localhost:4000/graphql",
@@ -36,33 +37,6 @@ const getSinkFromArgs = (args: SubscribeArguments): Sink => {
     error: args[2],
   } as Sink;
 };
-
-const httpFetcher: Fetcher = (graphQLParams) =>
-  ({
-    subscribe: (...args: SubscribeArguments) => {
-      const abortController = new AbortController();
-      const sink = getSinkFromArgs(args);
-
-      fetch("http://localhost:4000/graphql", {
-        method: "POST",
-        body: JSON.stringify(graphQLParams),
-        headers: {
-          "content-type": "application/json",
-        },
-        signal: abortController.signal,
-      })
-        .then((res) => res.json())
-        .then((res: unknown) => {
-          sink.next(res);
-          sink.complete();
-        })
-        .catch((err) => sink.error(err));
-
-      return {
-        unsubscribe: () => abortController.abort(),
-      };
-    },
-  } as any);
 
 const httpMultipartFetcher: Fetcher = (graphQLParams) =>
   ({
@@ -142,16 +116,29 @@ query greetings @live {
 `;
 
 export const GraphiQL = () => {
-  const [transport, setTransport] = React.useState(
-    "http" as "http" | "multipart-http" | "ws"
+  const [activeTransportIndex, setActiveTransportIndex] = React.useState(0);
+
+  const fetcherOptions: ToolbarDropDownOption[] = React.useMemo(
+    () => [
+      {
+        value: "ws",
+        label: "GraphQL over WS",
+        title: "GraphQL over WS",
+      },
+      {
+        value: "http",
+        label: "GraphQL over HTTP",
+        title: "GraphQL over HTTP",
+      },
+    ],
+    []
   );
 
-  const fetcher =
-    transport === "ws"
-      ? wsFetcher
-      : transport === "multipart-http"
-      ? httpMultipartFetcher
-      : httpFetcher;
+  const activeTransport = (
+    fetcherOptions[activeTransportIndex] ?? fetcherOptions[0]
+  ).value;
+
+  const fetcher = activeTransport === "ws" ? wsFetcher : httpMultipartFetcher;
 
   return (
     <div style={{ height: "100vh" }}>
@@ -159,39 +146,81 @@ export const GraphiQL = () => {
         defaultQuery={defaultQuery}
         fetcher={fetcher}
         additionalButtons={[
-          <ToolbarButton
-            title={
-              transport === "ws"
-                ? "Use HTTP Transport"
-                : transport === "http"
-                ? "Use HTTP Multipart Transport"
-                : "Use WS Transport"
-            }
-            label={
-              transport === "ws"
-                ? "Use HTTP Transport"
-                : transport === "http"
-                ? "Use HTTP Multipart Transport"
-                : "Use WS Transport"
-            }
-            onClick={() =>
-              setTransport((transport) =>
-                transport === "ws"
-                  ? "http"
-                  : transport === "http"
-                  ? "multipart-http"
-                  : "ws"
-              )
-            }
-          />,
+          <>
+            <div className="toolbar-label">Transport</div>
+            <ToolbarDropDown
+              options={fetcherOptions}
+              activeOptionIndex={activeTransportIndex}
+              onSelectOption={setActiveTransportIndex}
+            />
+          </>,
         ]}
-      >
-        <DefaultGraphiQL.Footer>
-          <div style={{ padding: 8, fontWeight: "bold" }}>
-            Currently Using the {transport} transport.
-          </div>
-        </DefaultGraphiQL.Footer>
-      </DefaultGraphiQL>
+      />
     </div>
+  );
+};
+
+type ToolbarDropDownOption = {
+  title: string;
+  label: string;
+  value: string;
+};
+
+const ToolbarDropDown = (props: {
+  options: ToolbarDropDownOption[];
+  activeOptionIndex: number;
+  placeholder?: string;
+  onSelectOption: (optionIndex: number) => void;
+}): React.ReactElement => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const selectedOption = props.options[props.activeOptionIndex] ?? null;
+
+  return (
+    <div className="toolbar-drop-down">
+      <ToolbarButton
+        title={selectedOption?.title ?? props.placeholder ?? "Select value"}
+        label={selectedOption?.label ?? props.placeholder ?? "Select Value"}
+        onClick={() => {
+          setIsOpen((isOpen) => !isOpen);
+        }}
+      />
+      {isOpen ? (
+        <ToolbarDropDownMenu>
+          {props.options.map((item, index) => (
+            <ToolbarDropDownMenuItem
+              key={item.value}
+              item={item}
+              isActive={index === props.activeOptionIndex}
+              onClick={() => {
+                props.onSelectOption(index);
+                setIsOpen(false);
+              }}
+            />
+          ))}
+        </ToolbarDropDownMenu>
+      ) : null}
+    </div>
+  );
+};
+
+const ToolbarDropDownMenu = (props: {
+  children: React.ReactNode;
+}): React.ReactElement => {
+  return <div className="toolbar-drop-down-menu">{props.children}</div>;
+};
+
+const ToolbarDropDownMenuItem = (props: {
+  item: ToolbarDropDownOption;
+  isActive: boolean;
+  onClick: () => void;
+}): React.ReactElement => {
+  return (
+    <button
+      className="toolbar-drop-down-menu-item"
+      title={props.item.title}
+      onClick={props.onClick}
+    >
+      {props.item.label}
+    </button>
   );
 };

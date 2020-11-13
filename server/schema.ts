@@ -85,7 +85,6 @@ const Subscription = new GraphQLObjectType({
         );
       },
       subscribe: async function* (_, args) {
-        await sleep();
         for (let i = 1; i <= args.to; i++) {
           yield { count: `ping ${i}` };
           await sleep();
