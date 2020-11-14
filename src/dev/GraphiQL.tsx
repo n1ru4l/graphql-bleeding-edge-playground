@@ -2,7 +2,7 @@ import React, { ComponentProps } from "react";
 import { GraphiQL as DefaultGraphiQL } from "graphiql";
 import "graphiql/graphiql.css";
 import { createClient } from "graphql-ws";
-import fetchMultipart from "fetch-multipart-graphql";
+import { meros } from "meros/browser";
 import { ToolbarButton } from "graphiql/dist/components/ToolbarButton";
 import "./custom-graphiql.css";
 
@@ -38,28 +38,47 @@ const getSinkFromArgs = (args: SubscribeArguments): Sink => {
   } as Sink;
 };
 
+const isAsyncIterable = (input: unknown): input is AsyncIterable<unknown> => {
+  return (
+    typeof input === "object" && input != null && Symbol.asyncIterator in input
+  );
+};
+
 const httpMultipartFetcher: Fetcher = (graphQLParams) =>
   ({
     subscribe: (...args: SubscribeArguments) => {
+      const abortController = new AbortController();
       const sink = getSinkFromArgs(args);
-      const isIntrospectionQuery = args.length === 3;
 
-      fetchMultipart("http://localhost:4000/graphql", {
-        method: "POST",
-        body: JSON.stringify(graphQLParams),
-        headers: {
-          "content-type": "application/json",
-        },
-        onNext: (parts) => {
-          // Introspection is broken if we return a array instead of a single item.
-          // TODO: This should be addressed inside GraphiQL
-          sink.next(isIntrospectionQuery ? parts[0] : parts);
-        },
-        onError: sink.error,
-        onComplete: sink.complete,
-      });
+      (async () => {
+        const patches = await fetch("http://localhost:4000/graphql", {
+          method: "POST",
+          body: JSON.stringify(graphQLParams),
+          headers: {
+            accept: "application/json, multipart/mixed",
+            "content-type": "application/json",
+          },
+          signal: abortController.signal,
+        }).then(meros);
 
-      return { unsubscribe: () => undefined };
+        if (isAsyncIterable(patches)) {
+          for await (const { body: patch, json } of patches) {
+            if (!json) {
+              sink.error(new Error('failed parsing part as json'));
+              break;
+            }
+            sink.next(patch);
+          }
+        } else {
+          sink.next(await (patches as Response).json());
+        }
+
+        sink.complete();
+      })().catch(sink.error);
+
+      return {
+        unsubscribe: () => abortController.abort(),
+      };
     },
   } as any);
 
