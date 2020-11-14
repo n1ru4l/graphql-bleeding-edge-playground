@@ -51,7 +51,7 @@ const httpMultipartFetcher: Fetcher = (graphQLParams) =>
       const sink = getSinkFromArgs(args);
 
       (async () => {
-        const response = await fetch("http://localhost:4000/graphql", {
+        const patches = await fetch("http://localhost:4000/graphql", {
           method: "POST",
           body: JSON.stringify(graphQLParams),
           headers: {
@@ -59,15 +59,17 @@ const httpMultipartFetcher: Fetcher = (graphQLParams) =>
             "content-type": "application/json",
           },
           signal: abortController.signal,
-        });
+        }).then(meros);
 
-        const patches = await meros(response);
         if (isAsyncIterable(patches)) {
-          for await (const patch of patches) {
+          for await (const { body: patch, json } of patches) {
+            if (!json) {
+              sink.error(new Error('failed parsing part as json'));
+              break;
+            }
             sink.next(patch);
           }
         } else {
-          // We assume its json here
           sink.next(await (patches as Response).json());
         }
 

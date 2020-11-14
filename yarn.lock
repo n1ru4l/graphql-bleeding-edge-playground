@@ -7457,10 +7457,10 @@ merge2@^1.3.0:
   resolved "https://registry.yarnpkg.com/merge2/-/merge2-1.4.1.tgz#4368892f885e907455a6fd7dc55c0c9d404990ae"
   integrity sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==
 
-meros@1.0.0-beta.5:
-  version "1.0.0-beta.5"
-  resolved "https://registry.yarnpkg.com/meros/-/meros-1.0.0-beta.5.tgz#af99f53d44ec9de0e177140b8369a6309dc37aa3"
-  integrity sha512-fkyjsAcUVdOJyUFNB0RO+CVb6S91M5vo6Kocnb6h2pwdNL7R8q7i6Vy7JdQTUP28qHGrfSRc9SHn7wklNGfZlQ==
+meros@1.0.0-beta.7:
+  version "1.0.0-beta.7"
+  resolved "https://registry.yarnpkg.com/meros/-/meros-1.0.0-beta.7.tgz#f504799db624dc68150d3c2dbe509fad02246013"
+  integrity sha512-5iRlhVIj6bfFamljJMecZYuM+BTQqZvNONpBFjYqks3dj7O+7aLgDULKmqtH4kS6Tp22pjZ9qY63s5jrn247LA==
 
 methods@~1.1.2:
   version "1.1.2"
