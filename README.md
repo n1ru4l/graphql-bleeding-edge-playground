@@ -16,8 +16,7 @@ Showcasing the following features with Fetcher implementations on GraphiQL:
 
 # Current issues
 
-1. graphql-ws does not support `@stream`
-2. graphql-helix with SSE-Z does not propagate GraphQL validation errors to the client properly
+1. graphql-helix with SSE-Z does not propagate GraphQL validation errors to the client properly
 
 # Setup instructions
 
