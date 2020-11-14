@@ -1,6 +1,9 @@
 # Experimental GraphQL Playground
 
-Demonstration of experimental GraphQL features with (experimental) `express-http` and (experimental) `graphql-ws`. Test the bleeding edge with less hazzle.
+Demonstration of experimental GraphQL features with the following transports:
+
+- `graphql-helix`
+- `graphql-ws`
 
 Showcasing the following features with Fetcher implementations on GraphiQL:
 
@@ -8,7 +11,13 @@ Showcasing the following features with Fetcher implementations on GraphiQL:
 - Mutation (HTTP, HTTP-Multipart, WebSocket)
 - Query with @defer (HTTP-Multipart, WebSocket)
 - Query with @stream (HTTP-Multipart, WebSocket)
-- Query with @live (WebSocket)
+- Subscription (WebSocket/SSE)
+- Query with @live (WebSocket/SSE)
+
+# Current issues
+
+1. graphql-ws does not support `@stream`
+2. graphql-helix with SSE-Z does not propagate GraphQL validation errors to the client properly
 
 # Setup instructions
 
