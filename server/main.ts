@@ -124,18 +124,23 @@ app.use("/graphql", async (req, res) => {
     });
 
     // We can assume a part be sent, either error, or payload;
-    res.write('---');
+    res.write("---");
 
     // Subscribe and send back each result as a separate chunk. We await the subscribe
     // call. Once we're done executing the request and there are no more results to send
     // to the client, the Promise returned by subscribe will resolve and we can end the response.
     await result.subscribe((result) => {
       const chunk = Buffer.from(JSON.stringify(result), "utf8");
-      const data = ['', 'Content-Type: application/json; charset=utf-8', '', chunk];
+      const data = [
+        "",
+        "Content-Type: application/json; charset=utf-8",
+        "",
+        chunk,
+      ];
       if (result.hasNext) {
-        data.push('---');
+        data.push("---");
       }
-      res.write(data.join('\r\n'));
+      res.write(data.join("\r\n"));
     });
 
     res.write("\r\n-----\r\n");
@@ -189,6 +194,9 @@ const websocketGraphQLServer = createServer(
       }
 
       return args;
+    },
+    onError: (_, err) => {
+      console.error(err);
     },
   },
   {
