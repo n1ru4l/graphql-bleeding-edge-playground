@@ -11,6 +11,7 @@ import "./custom-graphiql.css";
 
 const wsClient = createClient({
   url: "ws://localhost:4000/graphql",
+  lazy: false,
 });
 
 type Fetcher = ComponentProps<typeof DefaultGraphiQL>["fetcher"];
@@ -103,7 +104,7 @@ const httpMultipartFetcher: Fetcher = (graphQLParams) =>
         if (isAsyncIterable(patches)) {
           for await (const { body: patch, json } of patches) {
             if (!json) {
-              sink.error(new Error('failed parsing part as json'));
+              sink.error(new Error("failed parsing part as json"));
               break;
             }
             sink.next(patch);
@@ -132,7 +133,10 @@ const wsFetcher: Fetcher = (graphQLParams) =>
           variables: graphQLParams || {},
         },
         {
-          next: sink.next,
+          next: (next) => {
+            sink.next(next);
+            console.log(next);
+          },
           complete: sink.complete,
           error: sink.error,
         }
