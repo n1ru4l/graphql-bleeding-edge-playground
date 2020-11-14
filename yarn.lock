@@ -5528,12 +5528,12 @@ graphql-language-service-utils@^2.4.3:
   dependencies:
     graphql-language-service-types "^1.6.3"
 
-graphql-ws@^1.8.1:
-  version "1.9.1"
-  resolved "https://registry.yarnpkg.com/graphql-ws/-/graphql-ws-1.9.1.tgz#dcc346d10989183e96407c638f55cf03823a3968"
-  integrity sha512-hlK/XbnfQy3PMfo8KeLCDyw1qvmfvfKafDNbr89p7aRpSvD/SNNm5KUiEQcFOIP0q1880X9BDQhxhoc+8DU5ZA==
+graphql-ws@1.13.0:
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/graphql-ws/-/graphql-ws-1.13.0.tgz#969a61afac51815f755c3bcbdeed52809466a58d"
+  integrity sha512-iqKVahEKtQJSJQGohWHBlWgzl5/cR4k285xP5DSqRFdFxz3P6bb+OkG7ZHOk2JQ82WJDo6QSpFOjfv0aooeTbQ==
   dependencies:
-    ws "^7.3.1"
+    ws "^7.4.0"
 
 graphql@15.4.0-experimental-stream-defer.1:
   version "15.4.0-experimental-stream-defer.1"
@@ -10504,6 +10504,11 @@ sprintf-js@~1.0.2:
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
   integrity sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw=
 
+sse-z@0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/sse-z/-/sse-z-0.3.0.tgz#e215db7c303d6c4a4199d80cb63811cc28fa55b9"
+  integrity sha512-jfcXynl9oAOS9YJ7iqS2JMUEHOlvrRAD+54CENiWnc4xsuVLQVSgmwf7cwOTcBd/uq3XkQKBGojgvEtVXcJ/8w==
+
 sshpk@^1.7.0:
   version "1.16.1"
   resolved "https://registry.yarnpkg.com/sshpk/-/sshpk-1.16.1.tgz#fb661c0bef29b39db40769ee39fa70093d6f6877"
@@ -11960,10 +11965,15 @@ ws@^6.2.1:
   dependencies:
     async-limiter "~1.0.0"
 
-ws@^7.2.3, ws@^7.3.1:
+ws@^7.2.3:
   version "7.3.1"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.3.1.tgz#d0547bf67f7ce4f12a72dfe31262c68d7dc551c8"
   integrity sha512-D3RuNkynyHmEJIpD2qrgVkc9DQ23OrN/moAwZX4L8DfvszsJxpjQuUq3LMx6HoYji9fbIOBY18XWBsAux1ZZUA==
+
+ws@^7.4.0:
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-7.4.0.tgz#a5dd76a24197940d4a8bb9e0e152bb4503764da7"
+  integrity sha512-kyFwXuV/5ymf+IXhS6f0+eAFvydbaBW3zjpT6hUdAh/hbVjTIB5EHBGi0bPoCLSK2wcuz3BrEkB9LrYv1Nm4NQ==
 
 xml-name-validator@^3.0.0:
   version "3.0.0"
