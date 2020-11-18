@@ -2,8 +2,8 @@
 
 Demonstration of experimental GraphQL features with the following transports:
 
-- `graphql-helix`
-- `graphql-ws`
+- [`graphql-helix`](https://github.com/contrawork/graphql-helix) - GraphQL over HTTP
+- [`graphql-ws`](https://github.com/enisdenjo/graphql-ws) - GraphQL over WebSocket
 
 Showcasing the following features with Fetcher implementations on GraphiQL:
 
@@ -13,6 +13,15 @@ Showcasing the following features with Fetcher implementations on GraphiQL:
 - Query with @stream (HTTP-Multipart, WebSocket)
 - Subscription (WebSocket/SSE)
 - Query with @live (WebSocket/SSE)
+
+Powered by the following libraries:
+
+- [graphql-js](https://github.com/graphql/graphql-js) - The JavaScript reference implementation for GraphQL
+- [SSE-Z](https://github.com/contrawork/sse-z) - Simple SSE wrapper
+- [meros](https://github.com/maraisr/meros) - Easy multiresponse parser
+- [graphql-live-query](https://github.com/n1ru4l/graphql-live-query) - GraphQL live queries for any GraphQL schema
+
+- [https://github.com/contrawork/sse-z]()
 
 # Current issues
 
