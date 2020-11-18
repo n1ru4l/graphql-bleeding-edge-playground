@@ -10,10 +10,7 @@ import {
 } from "graphql";
 import { createServer } from "graphql-ws";
 import { InMemoryLiveQueryStore } from "@n1ru4l/in-memory-live-query-store";
-import {
-  NoLiveMixedWithDeferStreamRule,
-  isLiveQueryOperationDefinitionNode,
-} from "@n1ru4l/graphql-live-query";
+import { NoLiveMixedWithDeferStreamRule } from "@n1ru4l/graphql-live-query";
 import cors from "cors";
 import { schema } from "./schema";
 import { getGraphQLParameters, processRequest } from "graphql-helix";
@@ -99,18 +96,7 @@ app.use("/graphql", async (req, res) => {
     return;
   }
 
-  const documentAST = parse(query!);
-  const node = getMainOperationDefinition(
-    documentAST.definitions.filter(isOperationDefinitionNode),
-    operationName
-  );
-
-  if (
-    // Live queries should use SSE graphql-helix is currently identifying those as MULTIPART_RESPONSE
-    // which is totally fine as they are not part of the specification.
-    result.type === "MULTIPART_RESPONSE" &&
-    isLiveQueryOperationDefinitionNode(node) === false
-  ) {
+  if (result.type === "MULTIPART_RESPONSE") {
     // Indicate we're sending a multipart response
     res.writeHead(200, {
       Connection: "keep-alive",
