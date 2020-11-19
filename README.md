@@ -16,7 +16,7 @@
 
 > Check out the [Fetcher implementations on GraphiQL](src/dev/GraphiQL.tsx)
 
-Build on the following transports:
+Built on the following transports:
 
 - [`graphql-helix`](https://github.com/contrawork/graphql-helix) - GraphQL over HTTP
 - [`graphql-ws`](https://github.com/enisdenjo/graphql-ws) - GraphQL over WebSocket
