@@ -31,8 +31,8 @@ and powered by the following libraries:
 # Setup instructions
 
 1. clone this repo
-1. Make sure you have yarn and node v14 installed
-1. Run `yarn install`
+2. Make sure you have yarn and node v14 installed
+3. Run `yarn install`
 
 # Usage
 
