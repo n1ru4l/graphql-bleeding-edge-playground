@@ -21,10 +21,6 @@ Powered by the following libraries:
 - [meros](https://github.com/maraisr/meros) - Easy multiresponse parser
 - [graphql-live-query](https://github.com/n1ru4l/graphql-live-query) - GraphQL live queries for any GraphQL schema
 
-# Current issues
-
-1. graphql-helix with SSE-Z does not propagate GraphQL validation errors to the client properly
-
 # Setup instructions
 
 1. clone this repo
