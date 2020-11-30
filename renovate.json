@@ -1,5 +1,14 @@
 {
-  "extends": [
-    "config:base"
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base"],
+  "packageRules": [
+    {
+      "groupName": "testing library",
+      "packagePatterns": ["^@testing-library/"]
+    },
+    {
+      "groupName": "n1ru4l packages",
+      "packagePatterns": ["^@n1ru4l/"]
+    }
   ]
 }
