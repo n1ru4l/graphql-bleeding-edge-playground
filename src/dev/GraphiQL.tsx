@@ -207,16 +207,18 @@ export const GraphiQL = () => {
       <DefaultGraphiQL
         defaultQuery={defaultQuery}
         fetcher={fetcher}
-        additionalButtons={[
-          <>
-            <div className="toolbar-label">Transport</div>
-            <ToolbarDropDown
-              options={fetcherOptions}
-              activeOptionIndex={activeTransportIndex}
-              onSelectOption={setActiveTransportIndex}
-            />
-          </>,
-        ]}
+        toolbar={{
+          additionalContent: (
+            <>
+              <div className="toolbar-label">Transport</div>
+              <ToolbarDropDown
+                options={fetcherOptions}
+                activeOptionIndex={activeTransportIndex}
+                onSelectOption={setActiveTransportIndex}
+              />
+            </>
+          ),
+        }}
       />
     </div>
   );
