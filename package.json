@@ -34,7 +34,7 @@
     "graphql": "15.4.0-experimental-stream-defer.1",
     "graphql-helix": "1.1.0",
     "graphql-ws": "2.0.1",
-    "ws": "7.4.0"
+    "ws": "7.4.1"
   },
   "scripts": {
     "start": "react-scripts start",
