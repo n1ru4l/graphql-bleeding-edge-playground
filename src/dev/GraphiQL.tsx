@@ -171,7 +171,7 @@ query StreamTestQuery {
   streamTest @stream(initialCount: 2)
 }
 
-# only works with the ws transport :)
+# This one uses HTTP SSE or WebSocket
 query greetings @live {
   greetings
 }
