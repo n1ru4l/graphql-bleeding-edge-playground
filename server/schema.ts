@@ -22,7 +22,7 @@ const GraphQLDeferTest = new GraphQLObjectType({
     deferThisField: {
       type: GraphQLString,
       resolve: async () => {
-        await sleep(5000);
+        await sleep();
 
         return "Took a long time ,he?";
       },
