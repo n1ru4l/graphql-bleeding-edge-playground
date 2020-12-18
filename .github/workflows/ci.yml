@@ -22,5 +22,8 @@ jobs:
       - name: Install Dependencies
         run: yarn
 
-      - name: Build Packages
+      - name: Build Server
+        run: server:build
+
+      - name: Build Client
         run: yarn build

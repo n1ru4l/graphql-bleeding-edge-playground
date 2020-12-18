@@ -43,6 +43,7 @@
     "eject": "react-scripts eject",
     "postinstall": "patch-package",
     "server:start": "ts-node-dev --project server/tsconfig.json --no-deps server/main.ts",
+    "server:build": "tsc --project server/tsconfig.json",
     "write-schema": "ts-node --project ./server/tsconfig.json  ./scripts/write-graphql-schema.ts"
   },
   "eslintConfig": {
