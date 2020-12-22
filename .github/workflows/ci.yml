@@ -23,7 +23,7 @@ jobs:
         run: yarn
 
       - name: Build Server
-        run: server:build
+        run: yarn server:build
 
       - name: Build Client
         run: yarn build
