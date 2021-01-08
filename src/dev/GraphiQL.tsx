@@ -91,13 +91,7 @@ async function* multiResponseParser(
 
 const wsFetcher = (graphQLParams: FetcherParams) =>
   makeAsyncIterableIteratorFromSink<any>((sink) =>
-    wsClient.subscribe(graphQLParams, {
-      next: (next) => {
-        sink.next(next);
-      },
-      complete: sink.complete,
-      error: sink.error,
-    })
+    wsClient.subscribe(graphQLParams, sink)
   );
 
 const defaultQuery = `
