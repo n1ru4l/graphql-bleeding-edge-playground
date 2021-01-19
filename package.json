@@ -4,8 +4,8 @@
   "private": true,
   "devDependencies": {
     "@n1ru4l/push-pull-async-iterable-iterator": "2.0.1",
-    "@testing-library/jest-dom": "5.11.8",
-    "@testing-library/react": "11.2.2",
+    "@testing-library/jest-dom": "5.11.9",
+    "@testing-library/react": "11.2.3",
     "@testing-library/user-event": "12.6.0",
     "@types/cors": "2.8.9",
     "@types/express": "4.17.11",
