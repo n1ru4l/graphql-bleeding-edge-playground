@@ -94,35 +94,72 @@ const wsFetcher = (graphQLParams: FetcherParams) =>
     wsClient.subscribe(graphQLParams, sink)
   );
 
-const defaultQuery = `
+const defaultQuery = /* GraphQL */ `
+  #
+  # Simple ping query, nothing special here.
+  #
+  query PingQuery {
+    ping
+  }
 
-subscription CountSubscription {
-  count(to: 10)
-}
-mutation PingMutation {
-  ping
-}
-query PingQuery {
-  ping
-}
+  #
+  # Simple ping mutation, nothing special here.
+  #
+  mutation PingMutation {
+    ping
+  }
 
-query DeferTestQuery {
-  deferTest {
-    name
-    ... on GraphQLDeferTest @defer {
-      deferThisField
+  #
+  # Subscription backed by a AsyncGenerator function
+  #
+  subscription CountTestSubscription {
+    # This subscription will emit 10 events over the time span of 10 seconds before completing.
+    count(to: 10)
+  }
+
+  #
+  # Subscription backed by Node.js EventEmitter
+  #
+  subscription RandomHashTestSubscription {
+    # a new value is published in 1 second intervals
+    randomHash
+  }
+
+  #
+  # Here things get interesting ;)
+  # Let's learn a bit about defer!
+  #
+  query DeferTestQuery {
+    deferTest {
+      name
+      # The defer directive on fragments allows specifying that we are fine with
+      # getting the data requirement defined in that fragment later (if it is not available immediately)
+      ... on GraphQLDeferTest @defer {
+        # this field has a sleep(5000) call,
+        # which means it will take a long time until it will be resolved
+        deferThisField
+      }
     }
   }
-}
 
-query StreamTestQuery {
-  streamTest @stream(initialCount: 2)
-}
+  #
+  # There is also the @stream directive which is handy for lists that take a long time to retrieve.
+  #
+  query StreamTestQuery {
+    #
+    # With the initialCount argument we can specify the minimum required items that should be sent initially.
+    # the remaining items will then be streamed once they are ready to be sent over the wire.
+    streamTest @stream(initialCount: 2)
+  }
 
-# This one uses HTTP SSE or WebSocket
-query greetings @live {
-  greetings
-}
+  #
+  # This one is highly experimental and there is no RFC ongoing.
+  # The live directive specifies that the client wants to be notified in case any data the query selects has changed
+  # Check out https://github.com/n1ru4l/graphql-live-query for more information.
+  query LiveTestQuery @live {
+    # this field returns a list of greetings whose items are shuffled
+    greetings
+  }
 `;
 
 export const GraphiQL = () => {

@@ -1,4 +1,6 @@
 import express from "express";
+import * as events from "events";
+import * as crypto from "crypto";
 import {
   subscribe,
   specifiedRules,
@@ -16,18 +18,24 @@ import { getGraphQLParameters, processRequest } from "graphql-helix";
 
 const app = express();
 
+const eventEmitter = new events.EventEmitter();
 const liveQueryStore = new InMemoryLiveQueryStore();
 
 // small live query demonstration setup
 const greetings = ["Hello", "Hi", "Ay", "Sup"];
-const interval = setInterval(() => {
+const shuffleGreetingsInterval = setInterval(() => {
   const firstElement = greetings.pop();
   greetings.unshift(firstElement!);
   liveQueryStore.invalidate("Query.greetings");
 }, 1000);
 
+const randomHashInterval = setInterval(() => {
+  eventEmitter.emit("randomHash", crypto.randomBytes(20).toString("hex"));
+}, 1000);
+
 const context = {
   greetings,
+  eventEmitter,
 };
 
 const validationRules = [...specifiedRules, NoLiveMixedWithDeferStreamRule];
@@ -169,7 +177,8 @@ const graphqlWs = useServer(
 );
 
 process.once("SIGINT", () => {
-  clearInterval(interval);
+  clearInterval(shuffleGreetingsInterval);
+  clearInterval(randomHashInterval);
   console.log("Received SIGINT. Shutting down HTTP and Websocket server.");
   graphqlWs.dispose();
   httpServer.close();

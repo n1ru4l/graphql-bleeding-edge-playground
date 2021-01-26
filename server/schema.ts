@@ -1,3 +1,4 @@
+import * as events from "events";
 import {
   GraphQLBoolean,
   GraphQLInt,
@@ -77,17 +78,26 @@ const Subscription = new GraphQLObjectType({
         },
       },
       type: GraphQLString,
-      // resolve is fully optional btw
-      resolve: (source) => {
-        return (
-          source?.count ||
-          `You can even execute subscriptions via HTTP.... You should do it with the ws transport instead :)`
-        );
-      },
+      description:
+        "Count to a given number. Implementation Backed by AsyncGenerator function.",
+      resolve: (value) => value,
       subscribe: async function* (_, args) {
         for (let i = 1; i <= args.to; i++) {
-          yield { count: `ping ${i}` };
+          yield `${i}`;
           await sleep();
+        }
+      },
+    },
+    randomHash: {
+      description:
+        "Publishes a random hash every second. Backed by Node.js EventEmitter.",
+      type: GraphQLString,
+      resolve: (value) => value,
+      subscribe: async function* (_, __, context) {
+        const source = events.on(context.eventEmitter, "randomHash");
+        for await (const [value] of source) {
+          // forward value (which is wrapped as an array)
+          yield value;
         }
       },
     },
