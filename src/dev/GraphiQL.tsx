@@ -4,7 +4,9 @@ import "graphiql/graphiql.css";
 import { createClient } from "graphql-ws";
 import { meros } from "meros/browser";
 import { Subscription as SSESubscription } from "sse-z";
+import { io } from "socket.io-client";
 import { isLiveQueryOperationDefinitionNode } from "@n1ru4l/graphql-live-query";
+import { createSocketIOGraphQLClient } from "@n1ru4l/socket-io-graphql-client";
 import {
   makeAsyncIterableIteratorFromSink,
   isAsyncIterable,
@@ -16,6 +18,12 @@ import {
   FetcherParams,
   FetcherResult,
 } from "graphiql/dist/components/GraphiQL";
+
+const ioClient = io("http://localhost:4001");
+const ioGraphQLClient = createSocketIOGraphQLClient<FetcherResult>(ioClient);
+
+const ioFetcher = (graphQLParams: FetcherParams) =>
+  ioGraphQLClient.execute({ ...graphQLParams, operation: graphQLParams.query });
 
 const wsClient = createClient({
   url: "ws://localhost:4000/graphql",
@@ -177,6 +185,11 @@ export const GraphiQL = () => {
         label: "GraphQL over HTTP",
         title: "GraphQL over HTTP",
       },
+      {
+        value: "Socket.io",
+        label: "GraphQL over Socket.io",
+        title: "GraphQL over Socket.io",
+      },
     ],
     []
   );
@@ -185,7 +198,12 @@ export const GraphiQL = () => {
     fetcherOptions[activeTransportIndex] ?? fetcherOptions[0]
   ).value;
 
-  const fetcher = activeTransport === "ws" ? wsFetcher : httpMultipartFetcher;
+  const fetcher =
+    activeTransport === "ws"
+      ? wsFetcher
+      : activeTransport === "http"
+      ? httpMultipartFetcher
+      : ioFetcher;
 
   return (
     <div style={{ height: "100vh" }}>

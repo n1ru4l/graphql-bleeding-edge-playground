@@ -20,6 +20,7 @@ Built on the following transports:
 
 - [`graphql-helix`](https://github.com/contrawork/graphql-helix) - GraphQL over HTTP
 - [`graphql-ws`](https://github.com/enisdenjo/graphql-ws) - GraphQL over WebSocket
+- [`@n1ru4l/socket-io-graphql-server`](https://github.com/n1ru4l/graphql-live-query/tree/main/packages/socket-io-graphql-server) - GraphQL over Socket.io
 
 and powered by the following libraries:
 

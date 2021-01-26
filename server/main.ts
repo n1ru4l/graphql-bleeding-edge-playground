@@ -8,6 +8,7 @@ import {
   validate,
   ExecutionArgs,
 } from "graphql";
+import * as http from "http";
 import { Server as WSServer } from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { InMemoryLiveQueryStore } from "@n1ru4l/in-memory-live-query-store";
@@ -15,6 +16,8 @@ import { NoLiveMixedWithDeferStreamRule } from "@n1ru4l/graphql-live-query";
 import cors from "cors";
 import { schema } from "./schema";
 import { getGraphQLParameters, processRequest } from "graphql-helix";
+import { Server as IOServer } from "socket.io";
+import { registerSocketIOGraphQLServer } from "@n1ru4l/socket-io-graphql-server";
 
 const app = express();
 
@@ -176,10 +179,36 @@ const graphqlWs = useServer(
   wsServer
 );
 
+// We also spin up a Socket.io server that serves the GraphQL schema
+
+const socketIoHttpServer = http.createServer();
+const ioServer = new IOServer(socketIoHttpServer, {
+  cors: {
+    origin: "*",
+  },
+});
+
+registerSocketIOGraphQLServer({
+  socketServer: ioServer,
+  getParameter: () => ({
+    execute: liveQueryStore.execute,
+    // Overwrite validate and use our custom validation rules.
+    validationRules,
+    graphQLExecutionParameter: {
+      schema,
+      contextValue: context,
+    },
+  }),
+});
+
+socketIoHttpServer.listen(4001);
+
 process.once("SIGINT", () => {
   clearInterval(shuffleGreetingsInterval);
   clearInterval(randomHashInterval);
   console.log("Received SIGINT. Shutting down HTTP and Websocket server.");
   graphqlWs.dispose();
   httpServer.close();
+  ioServer.close();
+  socketIoHttpServer.close();
 });

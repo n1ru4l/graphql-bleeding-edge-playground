@@ -4,6 +4,7 @@
   "private": true,
   "devDependencies": {
     "@n1ru4l/push-pull-async-iterable-iterator": "2.0.1",
+    "@n1ru4l/socket-io-graphql-client": "0.9.1",
     "@testing-library/jest-dom": "5.11.9",
     "@testing-library/react": "11.2.3",
     "@testing-library/user-event": "12.6.2",
@@ -21,6 +22,7 @@
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-scripts": "4.0.1",
+    "socket.io-client": "3.1.0",
     "sse-z": "0.3.0",
     "ts-node": "9.1.1",
     "ts-node-dev": "1.1.1",
@@ -30,11 +32,13 @@
   "dependencies": {
     "@n1ru4l/graphql-live-query": "0.7.1",
     "@n1ru4l/in-memory-live-query-store": "0.5.5",
+    "@n1ru4l/socket-io-graphql-server": "0.9.0",
     "cors": "2.8.5",
     "express": "4.17.1",
     "graphql": "15.4.0-experimental-stream-defer.1",
     "graphql-helix": "1.2.3",
     "graphql-ws": "4.1.2",
+    "socket.io": "3.1.0",
     "ws": "7.4.2"
   },
   "scripts": {
