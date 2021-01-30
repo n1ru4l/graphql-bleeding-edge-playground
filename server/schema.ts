@@ -1,4 +1,4 @@
-import * as events from "events";
+import { on } from "events";
 import {
   GraphQLBoolean,
   GraphQLInt,
@@ -94,7 +94,7 @@ const Subscription = new GraphQLObjectType({
       type: GraphQLString,
       resolve: (value) => value,
       subscribe: async function* (_, __, context) {
-        const source = events.on(context.eventEmitter, "randomHash");
+        const source = on(context.eventEmitter, "randomHash");
         for await (const [value] of source) {
           // forward value (which is wrapped as an array)
           yield value;
