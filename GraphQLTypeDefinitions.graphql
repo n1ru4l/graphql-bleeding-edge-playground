@@ -3,7 +3,12 @@
 """
 Instruction for establishing a live connection that is updated once the underlying data changes.
 """
-directive @live on QUERY
+directive @live(
+  """
+  Whether the query should be live or not.
+  """
+  if: Boolean = true
+) on QUERY
 
 type Query {
   ping: Boolean
@@ -22,5 +27,13 @@ type Mutation {
 }
 
 type Subscription {
+  """
+  Count to a given number. Implementation Backed by AsyncGenerator function.
+  """
   count(to: Int!): String
+
+  """
+  Publishes a random hash every second. Backed by Node.js EventEmitter.
+  """
+  randomHash: String
 }
