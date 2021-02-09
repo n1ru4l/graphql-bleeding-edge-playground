@@ -74,18 +74,18 @@ const httpMultipartFetcher = async (
       "content-type": "application/json",
     },
     signal: abortController.signal,
-  }).then(meros);
+  }).then(r => meros<FetcherResult>(r));
 
   if (isAsyncIterable(patches)) {
-    return multiResponseParser(patches) as AsyncIterableIterator<FetcherResult>;
+    return multiResponseParser(patches);
   }
 
   return patches.json();
 };
 
-async function* multiResponseParser(
+async function* multiResponseParser<T>(
   iterator: AsyncIterableIterator<{
-    body: object | string;
+    body: T;
     json: boolean;
   }>
 ) {
