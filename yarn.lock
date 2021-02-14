@@ -1649,10 +1649,10 @@
   resolved "https://registry.yarnpkg.com/@types/cookie/-/cookie-0.4.0.tgz#14f854c0f93d326e39da6e3b6f34f7d37513d108"
   integrity sha512-y7mImlc/rNkvCRmg8gC3/lj87S7pTUIJ6QGjwHR9WQJcFs+ZMTOaoPrkdFA/YdbuqVEmEbb5RdhVxMkAcgOnpg==
 
-"@types/cors@2.8.9", "@types/cors@^2.8.8":
-  version "2.8.9"
-  resolved "https://registry.yarnpkg.com/@types/cors/-/cors-2.8.9.tgz#4bd1fcac72eca8d5bec93e76c7fdcbdc1bc2cd4a"
-  integrity sha512-zurD1ibz21BRlAOIKP8yhrxlqKx6L9VCwkB5kMiP6nZAhoF5MvC7qS1qPA7nRcr1GJolfkQC7/EAL4hdYejLtg==
+"@types/cors@2.8.10", "@types/cors@^2.8.8":
+  version "2.8.10"
+  resolved "https://registry.yarnpkg.com/@types/cors/-/cors-2.8.10.tgz#61cc8469849e5bcdd0c7044122265c39cec10cf4"
+  integrity sha512-C7srjHiVG3Ey1nR6d511dtDkCEjxuN9W1HWAEjGq8kpcwmNM6JJkpC0xvabM7BXTG2wDq8Eu33iH9aQKa7IvLQ==
 
 "@types/eslint@^7.2.0":
   version "7.2.4"
