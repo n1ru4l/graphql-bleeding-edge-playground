@@ -1333,10 +1333,10 @@
   resolved "https://registry.yarnpkg.com/@n1ru4l/push-pull-async-iterable-iterator/-/push-pull-async-iterable-iterator-2.1.2.tgz#e486bf86c4c29e78601694a26f31c2dec0c08d9b"
   integrity sha512-KwZGeX2XK7Xj9ksWwei5923QnqIGoEuLlh3O46OW9vc8hQxjzmMTKCgJMVZ5ne5xaWFQYDT2dMpbUhq6hEOhxA==
 
-"@n1ru4l/socket-io-graphql-client@0.9.1":
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/@n1ru4l/socket-io-graphql-client/-/socket-io-graphql-client-0.9.1.tgz#3d2d3e7dc4c8d6a5192f227f01282cc9d249c8ec"
-  integrity sha512-dWH9MNuJmnjuMQOUnGoPRBdyVKtYD75GXkxLh8YIK8VnCUiPjRPRKV1wrxxtz8B0b6DsVuW+YLIaf1pBEOm2TQ==
+"@n1ru4l/socket-io-graphql-client@0.9.3":
+  version "0.9.3"
+  resolved "https://registry.yarnpkg.com/@n1ru4l/socket-io-graphql-client/-/socket-io-graphql-client-0.9.3.tgz#d3050b82fd6ef6ae17a702d4840788d61013bbab"
+  integrity sha512-KvjCc1+Z3MM+e4T+AaUqwtr/703/Gj1uNxfVDhAEkGBSqwyMS3EHLkFX/B2Fn18F8WFyQD9prHoq/49u2AY3iQ==
   dependencies:
     "@n1ru4l/push-pull-async-iterable-iterator" "^2.0.0"
 
