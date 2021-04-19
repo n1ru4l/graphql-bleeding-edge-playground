@@ -1,5 +1,9 @@
 import React from "react";
-import { GraphiQL as DefaultGraphiQL } from "graphiql";
+import {
+  GraphiQL as DefaultGraphiQL,
+  FetcherParams,
+  FetcherResult,
+} from "graphiql";
 import "graphiql/graphiql.css";
 import { createClient } from "graphql-ws";
 import { meros } from "meros/browser";
@@ -14,10 +18,6 @@ import {
 import { parse, getOperationAST } from "graphql";
 import { ToolbarButton } from "graphiql/dist/components/ToolbarButton";
 import "./custom-graphiql.css";
-import {
-  FetcherParams,
-  FetcherResult,
-} from "graphiql/dist/components/GraphiQL";
 
 const ioClient = io("http://localhost:4001");
 const ioGraphQLClient = createSocketIOGraphQLClient<FetcherResult>(ioClient);
@@ -74,7 +74,7 @@ const httpMultipartFetcher = async (
       "content-type": "application/json",
     },
     signal: abortController.signal,
-  }).then(r => meros<FetcherResult>(r));
+  }).then((r) => meros<FetcherResult>(r));
 
   if (isAsyncIterable(patches)) {
     return multiResponseParser(patches);
