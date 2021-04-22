@@ -5530,10 +5530,10 @@ graphql-language-service@^3.1.2:
     graphql-language-service-interface "^2.8.2"
     graphql-language-service-types "^1.8.0"
 
-graphql-ws@4.4.1, graphql-ws@^4.3.2:
-  version "4.4.1"
-  resolved "https://registry.yarnpkg.com/graphql-ws/-/graphql-ws-4.4.1.tgz#69f472f362b57366af23265c6c6b967077b9d1dc"
-  integrity sha512-kHgDohfRQFDdzXzLqsV4wZM141sO1ukaXW/RSLlmIUsxT4N3r/4eQYTbkeLd4yRXaDkmv/rYf1EHL09Y5KO+Uw==
+graphql-ws@4.4.2, graphql-ws@^4.3.2:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/graphql-ws/-/graphql-ws-4.4.2.tgz#f2d83f1863ba3069117199311d664fd28f4aaa8e"
+  integrity sha512-Cz+t1w+8+tiHIKzcz45tMwrxJpPSQ7KNjQrfN8ADAELECkkBB7aSvAgpShWz0Tne8teH/UxzJsULObLVq5eMvQ==
 
 graphql@15.4.0-experimental-stream-defer.1:
   version "15.4.0-experimental-stream-defer.1"
