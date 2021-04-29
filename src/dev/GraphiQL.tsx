@@ -16,6 +16,7 @@ import {
   isAsyncIterable,
 } from "@n1ru4l/push-pull-async-iterable-iterator";
 import { parse, getOperationAST } from "graphql";
+import type { GraphQLError } from "graphql";
 import { ToolbarButton } from "graphiql/dist/components/ToolbarButton";
 import "./custom-graphiql.css";
 
@@ -99,7 +100,27 @@ async function* multiResponseParser<T>(
 
 const wsFetcher = (graphQLParams: FetcherParams) =>
   makeAsyncIterableIteratorFromSink<any>((sink) =>
-    wsClient.subscribe(graphQLParams, sink)
+    wsClient.subscribe(graphQLParams, {
+      ...sink,
+      error: err => {
+        if (err instanceof Error) {
+          sink.error(err);
+        } else if (err instanceof CloseEvent) {
+          sink.error(
+            new Error(
+              `Socket closed with event ${err.code} ${err.reason || ''}`.trim()
+            ),
+          );
+        } else {
+          sink.error(
+            new Error(
+              (err as GraphQLError[]).map(({ message }) => message).join(', ')
+            ),
+          );
+        }
+      },
+    })
+    })
   );
 
 const defaultQuery = /* GraphQL */ `
