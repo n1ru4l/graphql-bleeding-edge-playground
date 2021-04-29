@@ -120,7 +120,6 @@ const wsFetcher = (graphQLParams: FetcherParams) =>
         }
       },
     })
-    })
   );
 
 const defaultQuery = /* GraphQL */ `
