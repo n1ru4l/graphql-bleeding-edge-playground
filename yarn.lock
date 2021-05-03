@@ -1028,6 +1028,23 @@
   resolved "https://registry.yarnpkg.com/@csstools/normalize.css/-/normalize.css-10.1.0.tgz#f0950bba18819512d42f7197e56c518aa491cf18"
   integrity sha512-ij4wRiunFfaJxjB0BdrYHIH8FxBJpOwNPhhAcunlmPdXudL1WQV1qoP9un6JsEBAgQH+7UXyyjh0g7jTxXK6tg==
 
+"@envelop/core@0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@envelop/core/-/core-0.1.3.tgz#062d97b5171b8d999c81b55618f0a93c0d290dbb"
+  integrity sha512-QibxaVkQ2Zoj2oBx8xBHpcwJo0WWk86AsjDXl9v1jKi0HHji24YysN5+1R7MudglWqqVndt85+VxjqyDWsE7Sg==
+  dependencies:
+    "@envelop/types" "0.1.3"
+
+"@envelop/extended-validation@0.0.1-alpha-634433a.0":
+  version "0.0.1-alpha-634433a.0"
+  resolved "https://registry.yarnpkg.com/@envelop/extended-validation/-/extended-validation-0.0.1-alpha-634433a.0.tgz#bd8bcd6fe3b9b249c171c0efb7ce6ce2c55f9eb5"
+  integrity sha512-oFt7bL4TpMPiMjdnFSutzUu3HiYb/TEDnXhBvf0gbnEgUFbO/OLl6NoS8FiXqanpx53fEdemZPjpuOko0IMMig==
+
+"@envelop/types@0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@envelop/types/-/types-0.1.3.tgz#bf822c2fa13437d0def8860e7b1f48fdfaea8262"
+  integrity sha512-RrGq2IxYGKyXQoaE4pBBKtx8ZkIDqq6e3KZ77ADQPOFM0showrQXliEh8okeyX7BRAMygcts22yj9/WnejMJMQ==
+
 "@eslint/eslintrc@^0.2.1":
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-0.2.1.tgz#f72069c330461a06684d119384435e12a5d76e3c"

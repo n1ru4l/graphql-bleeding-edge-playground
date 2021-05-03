@@ -1,12 +1,17 @@
-import { on } from "events";
 import {
+  DirectiveLocation,
   GraphQLBoolean,
+  GraphQLDirective,
+  GraphQLID,
+  GraphQLInputObjectType,
   GraphQLInt,
   GraphQLList,
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLSchema,
   GraphQLString,
+  InputObjectTypeDefinitionNode,
+  parse,
   specifiedDirectives,
 } from "graphql";
 import { GraphQLLiveDirective } from "@n1ru4l/graphql-live-query";
@@ -29,6 +34,24 @@ const GraphQLDeferTest = new GraphQLObjectType({
       },
     },
   },
+});
+
+const GraphQLOneOfInputObject = new GraphQLInputObjectType({
+  name: "GraphQLOneOfInput",
+  fields: {
+    byId: {
+      type: GraphQLID,
+    },
+    byName: {
+      type: GraphQLString,
+    },
+  },
+  astNode: parse(/* GraphQL */ `
+    input GraphQLOneOfInput @oneOf {
+      byId: ID
+      byName: String
+    }
+  `).definitions[0] as InputObjectTypeDefinitionNode,
 });
 
 const Query = new GraphQLObjectType({
@@ -54,6 +77,15 @@ const Query = new GraphQLObjectType({
     greetings: {
       type: GraphQLList(GraphQLString),
       resolve: (_, __, context) => context.greetings,
+    },
+    oneOfTest: {
+      type: GraphQLBoolean,
+      args: {
+        input: {
+          type: GraphQLNonNull(GraphQLOneOfInputObject),
+        },
+      },
+      resolve: () => true,
     },
   },
 });
@@ -93,20 +125,28 @@ const Subscription = new GraphQLObjectType({
         "Publishes a random hash every second. Backed by Node.js EventEmitter.",
       type: GraphQLString,
       resolve: (value) => value,
-      subscribe: async function* (_, __, context) {
-        const source = on(context.eventEmitter, "randomHash");
-        for await (const [value] of source) {
-          // forward value (which is wrapped as an array)
-          yield value;
-        }
-      },
+      subscribe: (_, __, context) => context.pubSub.subscribe("randomHash"),
     },
   },
+});
+
+const GraphQLOneOfDirective = new GraphQLDirective({
+  name: "oneOf",
+  locations: [
+    DirectiveLocation.FIELD_DEFINITION,
+    DirectiveLocation.INPUT_OBJECT,
+  ],
+  description:
+    "Only one field of a type that is annotated with oneOf can resolve to a value.",
 });
 
 export const schema = new GraphQLSchema({
   query: Query,
   mutation: Mutation,
   subscription: Subscription,
-  directives: [...specifiedDirectives, GraphQLLiveDirective],
+  directives: [
+    ...specifiedDirectives,
+    GraphQLLiveDirective,
+    GraphQLOneOfDirective,
+  ],
 });

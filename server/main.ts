@@ -1,30 +1,42 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import express from "express";
-import * as events from "events";
 import * as crypto from "crypto";
-import {
-  subscribe,
-  specifiedRules,
-  parse,
-  validate,
-  ExecutionArgs,
-} from "graphql";
+import { specifiedRules, ExecutionArgs } from "graphql";
 import * as http from "http";
 import { Server as WSServer } from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { InMemoryLiveQueryStore } from "@n1ru4l/in-memory-live-query-store";
 import { NoLiveMixedWithDeferStreamRule } from "@n1ru4l/graphql-live-query";
 import cors from "cors";
-import { schema } from "./schema";
+import { schema as _schema } from "./schema";
 import { getGraphQLParameters, processRequest } from "graphql-helix";
 import { Server as IOServer } from "socket.io";
 import { registerSocketIOGraphQLServer } from "@n1ru4l/socket-io-graphql-server";
+import { envelop, useLogger, useSchema } from "@envelop/core";
+import {
+  useExtendedValidation,
+  OneOfInputObjectsRule,
+} from "@envelop/extended-validation";
+import { createPubSub } from "./pubsub";
+
+const { schema, execute, subscribe, validate, parse } = envelop({
+  plugins: [
+    useSchema(_schema),
+    useLogger(),
+    useExtendedValidation({ rules: [OneOfInputObjectsRule] }),
+  ],
+})();
 
 const app = express();
 
-const eventEmitter = new events.EventEmitter();
-const liveQueryStore = new InMemoryLiveQueryStore();
+const pubSub = createPubSub<{
+  randomHash: string;
+}>();
+
+const liveQueryStore = new InMemoryLiveQueryStore({ execute });
 
 // small live query demonstration setup
+// we mutate the array and invalidate it every second so a new result is sent to the clients.
 const greetings = ["Hello", "Hi", "Ay", "Sup"];
 const shuffleGreetingsInterval = setInterval(() => {
   const firstElement = greetings.pop();
@@ -33,12 +45,12 @@ const shuffleGreetingsInterval = setInterval(() => {
 }, 1000);
 
 const randomHashInterval = setInterval(() => {
-  eventEmitter.emit("randomHash", crypto.randomBytes(20).toString("hex"));
+  pubSub.publish("randomHash", crypto.randomBytes(20).toString("hex"));
 }, 1000);
 
-const context = {
+const contextValue = {
   greetings,
-  eventEmitter,
+  pubSub,
 };
 
 const validationRules = [...specifiedRules, NoLiveMixedWithDeferStreamRule];
@@ -64,8 +76,11 @@ app.use("/graphql", async (req, res) => {
     variables,
     request,
     schema,
-    contextFactory: () => context,
+    contextFactory: () => contextValue,
     execute: liveQueryStore.execute,
+    subscribe,
+    parse,
+    validate,
     validationRules,
   });
 
@@ -161,7 +176,7 @@ const graphqlWs = useServer(
             ? msg.payload.query
             : parse(msg.payload.query),
         variableValues: msg.payload.variables,
-        contextValue: context,
+        contextValue,
       };
 
       // don't forget to validate when returning custom execution args!
@@ -192,11 +207,14 @@ registerSocketIOGraphQLServer({
   socketServer: ioServer,
   getParameter: () => ({
     execute: liveQueryStore.execute,
+    subscribe,
+    parse,
+    validate,
     // Overwrite validate and use our custom validation rules.
     validationRules,
     graphQLExecutionParameter: {
       schema,
-      contextValue: context,
+      contextValue,
     },
   }),
 });
