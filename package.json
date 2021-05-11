@@ -40,7 +40,7 @@
     "graphql": "15.4.0-experimental-stream-defer.1",
     "graphql-helix": "1.4.1",
     "graphql-ws": "4.5.0",
-    "socket.io": "4.0.2",
+    "socket.io": "4.1.0",
     "ws": "7.4.5"
   },
   "scripts": {
