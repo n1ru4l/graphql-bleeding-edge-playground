@@ -39,7 +39,7 @@
     "express": "4.17.1",
     "graphql": "15.4.0-experimental-stream-defer.1",
     "graphql-helix": "1.6.0",
-    "graphql-ws": "4.5.0",
+    "graphql-ws": "4.5.1",
     "socket.io": "4.1.1",
     "ws": "7.4.5"
   },
