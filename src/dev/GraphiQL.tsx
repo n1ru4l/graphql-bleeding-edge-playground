@@ -102,20 +102,20 @@ const wsFetcher = (graphQLParams: FetcherParams) =>
   makeAsyncIterableIteratorFromSink<any>((sink) =>
     wsClient.subscribe(graphQLParams, {
       ...sink,
-      error: err => {
+      error: (err) => {
         if (err instanceof Error) {
           sink.error(err);
         } else if (err instanceof CloseEvent) {
           sink.error(
             new Error(
-              `Socket closed with event ${err.code} ${err.reason || ''}`.trim()
-            ),
+              `Socket closed with event ${err.code} ${err.reason || ""}`.trim()
+            )
           );
         } else {
           sink.error(
             new Error(
-              (err as GraphQLError[]).map(({ message }) => message).join(', ')
-            ),
+              (err as GraphQLError[]).map(({ message }) => message).join(", ")
+            )
           );
         }
       },
