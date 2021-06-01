@@ -29,6 +29,8 @@ and powered by the following libraries:
 - [SSE-Z](https://github.com/contrawork/sse-z) - Simple SSE wrapper
 - [graphql-live-query](https://github.com/n1ru4l/graphql-live-query) - GraphQL live queries for any GraphQL schema
 
+Running on ESM ;)
+
 # Setup instructions
 
 1. clone this repo

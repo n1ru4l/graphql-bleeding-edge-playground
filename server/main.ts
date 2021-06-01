@@ -1,4 +1,6 @@
-import express from "express";
+import { App } from "@tinyhttp/app";
+import { cors } from "@tinyhttp/cors";
+import { json } from "milliparsec";
 import * as events from "events";
 import * as crypto from "crypto";
 import {
@@ -9,17 +11,16 @@ import {
   ExecutionArgs,
 } from "graphql";
 import * as http from "http";
-import { Server as WSServer } from "ws";
+import ws from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { InMemoryLiveQueryStore } from "@n1ru4l/in-memory-live-query-store";
 import { NoLiveMixedWithDeferStreamRule } from "@n1ru4l/graphql-live-query";
-import cors from "cors";
 import { schema } from "./schema";
 import { getGraphQLParameters, processRequest } from "graphql-helix";
 import { Server as IOServer } from "socket.io";
 import { registerSocketIOGraphQLServer } from "@n1ru4l/socket-io-graphql-server";
 
-const app = express();
+const app = new App();
 
 const eventEmitter = new events.EventEmitter();
 const liveQueryStore = new InMemoryLiveQueryStore();
@@ -44,13 +45,13 @@ const context = {
 const validationRules = [...specifiedRules, NoLiveMixedWithDeferStreamRule];
 
 app.use(cors());
-app.use(express.json());
+app.use(json());
 app.use("/graphql", async (req, res) => {
   // Create a generic Request object that can be consumed by Graphql Helix's API
   const request = {
     body: req.body,
     headers: req.headers,
-    method: req.method,
+    method: req.method ?? "GET",
     query: req.query,
   };
 
@@ -142,7 +143,7 @@ const httpServer = app.listen(PORT, () => {
   console.log(`GraphQL Server listening on port ${PORT}.`);
 });
 
-const wsServer = new WSServer({
+const wsServer = new ws.Server({
   server: httpServer,
   path: "/graphql",
 });
