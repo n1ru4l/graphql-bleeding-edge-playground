@@ -1,6 +1,7 @@
 import { on } from "events";
 import {
   GraphQLBoolean,
+  GraphQLInputObjectType,
   GraphQLInt,
   GraphQLList,
   GraphQLNonNull,
@@ -58,12 +59,40 @@ const Query = new GraphQLObjectType({
   },
 });
 
+const GraphQLLogEventInputType = new GraphQLInputObjectType({
+  name: "Event",
+  fields: {
+    stringEvent: {
+      type: GraphQLString,
+    },
+    booleanEvent: {
+      type: GraphQLBoolean,
+    },
+  },
+  extensions: {
+    // the envelop OneOf validation rule uses this extension field for detecting oneOf types.
+    // check out the docs for more information: https://github.com/dotansimha/envelop/tree/main/packages/plugins/extended-validation#union-inputs-oneof
+    oneOf: true,
+  },
+});
+
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
   fields: {
     ping: {
       type: GraphQLBoolean,
       resolve: () => true,
+    },
+    logEvent: {
+      type: GraphQLBoolean,
+      args: {
+        input: {
+          type: GraphQLNonNull(GraphQLLogEventInputType),
+        },
+      },
+      resolve: (_, args) => {
+        console.log("incoming event", args);
+      },
     },
   },
 });

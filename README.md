@@ -13,6 +13,7 @@
 - Query with @stream (HTTP-Multipart, WebSocket)
 - Subscription (WebSocket/SSE)
 - Query with @live (WebSocket/SSE)
+- [OneOf/Polymorphic Input Objects and Fields](https://github.com/graphql/graphql-spec/pull/825)
 
 > Check out the [Fetcher implementations on GraphiQL](src/dev/GraphiQL.tsx)
 
@@ -27,6 +28,7 @@ and powered by the following libraries:
 - [graphql-js](https://github.com/graphql/graphql-js) - The JavaScript reference implementation for GraphQL
 - [meros](https://github.com/maraisr/meros) - Makes reading multipart responses simple
 - [SSE-Z](https://github.com/contrawork/sse-z) - Simple SSE wrapper
+- [envelop](https://github.com/dotansimha/envelop) - The missing graphql.js plugin/extension library
 - [graphql-live-query](https://github.com/n1ru4l/graphql-live-query) - GraphQL live queries for any GraphQL schema
 
 Running on ESM ;)

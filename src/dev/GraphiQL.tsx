@@ -124,14 +124,20 @@ const wsFetcher = (graphQLParams: FetcherParams) =>
 
 const defaultQuery = /* GraphQL */ `
   #
-  # Simple ping query, nothing special here.
+  # Query
+  #
+  # This is just a simple query - nothing to special here.
+  # But note that you can execute it via WebSocket, HTTP and Socket.io
   #
   query PingQuery {
     ping
   }
 
   #
-  # Simple ping mutation, nothing special here.
+  # Mutation
+  #
+  # This is just a simple query - nothing to special here.
+  # But note that you can execute it via WebSocket, HTTP and Socket.io
   #
   mutation PingMutation {
     ping
@@ -153,9 +159,14 @@ const defaultQuery = /* GraphQL */ `
     randomHash
   }
 
+  # 
+  # Query using @defer
   #
-  # Here things get interesting ;)
-  # Let's learn a bit about defer!
+  # defer can be used on fragments in order to defer sending a part of the result to the client,
+  # if it takes longer than the rest of the resolvers to yield an value.
+  #
+  # @defer is useful when a certain resolver on your backend is slow, but not mandatory for showing something meaningful to your users.
+  # An example for this would be a slow database call or third-party service.
   #
   query DeferTestQuery {
     deferTest {
@@ -171,7 +182,13 @@ const defaultQuery = /* GraphQL */ `
   }
 
   #
-  # There is also the @stream directive which is handy for lists that take a long time to retrieve.
+  # Query using stream
+  #
+  # stream can be used on fields that return lists.
+  # The resolver on the backend uses an async generator function for yielding the values.
+  #
+  # This allows slow/huge lists of data to be streamed to the client. While data is still coming in the client can already show UI.
+  # Handy for feed like views.
   #
   query StreamTestQuery {
     #
@@ -181,14 +198,54 @@ const defaultQuery = /* GraphQL */ `
   }
 
   #
+  # Query using @live
+  #
   # This one is highly experimental and there is no RFC ongoing.
-  # The live directive specifies that the client wants to be notified in case any data the query selects has changed
+  # The live directive specifies that the client wants to always wants to have the latest up to date data streamed.
+  #
+  # The implementation tracks the resources a client consumes and re-executes the query operation once one of those got stale/invalidated.
   # Check out https://github.com/n1ru4l/graphql-live-query for more information.
+  #
+  # This example returns a list that is mutated and invalidated each second.
+  #
   query LiveTestQuery @live {
     # this field returns a list of greetings whose items are shuffled
     greetings
   }
-`;
+
+  #
+  # OneOf input types
+  #
+  # OneOf input types allow polymorphic input fields. They are currently in the RFC stage. https://github.com/graphql/graphql-spec/pull/825
+  # The @envelop/extended-validation plugin allows using the feature today! https://github.com/dotansimha/envelop/tree/main/packages/plugins/extended-validation
+  # 
+  # The input type LogEvent type is marked as a oneOf type. Therefore, the validation of the operation only passes if the input has either a stringEvent or booleanEvent key.
+  # Providing both or neither would result in a validation error.
+  #
+  # Let's provide a string as the input
+  mutation OneOfStringInputMutation {
+    logEvent(input: {
+      stringEvent: "hey"
+    })
+  }
+  # Let's provide a boolean as the input
+  mutation OneOfBooleanInputMutation {
+    logEvent(input: {
+      booleanEvent: true
+    })
+  }
+  # Uncomment and execute this query and you will encounter a validation error.
+  # mutation OneOfInvalidInputMutation {
+  #   logEvent(input: {
+  #     stringEvent: "hey"
+  #     booleanEvent: true
+  #   })
+  # }
+`
+  .split(`\n`)
+  .slice(1)
+  .map((line) => line.replace("  ", ""))
+  .join(`\n`);
 
 export const GraphiQL = () => {
   const [activeTransportIndex, setActiveTransportIndex] = React.useState(0);
@@ -241,6 +298,13 @@ export const GraphiQL = () => {
               />
             </>
           ),
+        }}
+        // ensure that the defaultQuery is always used by disabling storage
+        storage={{
+          getItem: () => null,
+          removeItem: () => undefined,
+          setItem: () => undefined,
+          length: 0,
         }}
       />
     </div>
