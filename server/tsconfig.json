@@ -4,14 +4,12 @@
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "strict": true,
     "module": "ESNext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "outDir": "./../server-build",
-    "typeRoots": ["../node_modules/@types", "./@types"]
+    "outDir": "./../server-build"
   },
   "include": ["./"],
   "exclude": ["node_modules"]

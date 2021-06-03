@@ -241,10 +241,10 @@
   dependencies:
     "@envelop/types" "0.1.4"
 
-"@envelop/extended-validation@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@envelop/extended-validation/-/extended-validation-0.1.1.tgz#9072c53665144550eca8ee3af19cceb8ebc3be1f"
-  integrity sha512-RFPaMuDO2VFY9j2hpJDdYxXVh9wNufiQIOp7SNbWabKQa4BJ1M//iivnbzoSOTUJFaaHnFGNZG3OU5HmQEWb2w==
+"@envelop/extended-validation@0.1.2-alpha-8ddaad5.0":
+  version "0.1.2-alpha-8ddaad5.0"
+  resolved "https://registry.yarnpkg.com/@envelop/extended-validation/-/extended-validation-0.1.2-alpha-8ddaad5.0.tgz#560aca35d31cb8763c0f83c88b7d64a7c08fd9b5"
+  integrity sha512-xU76yUvF6GLXzHF/nwSaAZAMNtvcPuZ0FvPgo6M7fqjtJWh3W+VNQrXQqTUL3HvoXn3l8HX1nA4pOt1aueIODA==
 
 "@envelop/types@0.1.4":
   version "0.1.4"
@@ -390,13 +390,6 @@
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@tinyhttp/cookie/-/cookie-1.3.0.tgz#5a13051da80a0e340894dd3b69faa7307a7bffec"
   integrity sha512-4ZVfP8WApV9ZRchv/1i0QiKdP0wxWTUNv4ZsMQrqK0p1KXA0/SvpYUTS6bp1E6Yo0dNxcKte4wJ4FCWFDcShhQ==
-
-"@tinyhttp/cors@1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@tinyhttp/cors/-/cors-1.3.0.tgz#0c6b05a6981e49d2ae0ccb182c49dfa81a58378c"
-  integrity sha512-skN5VRjOWKPIHa4zmBGLBsx4NKPEGQUkpHRRmgPs0wOHkGSAGOfriritR61QxY5yXgRMukQM3gfULHepRLJuWg==
-  dependencies:
-    es-vary "^0.0.8"
 
 "@tinyhttp/encode-url@0.3.0":
   version "0.3.0"
@@ -934,7 +927,7 @@ core-js-pure@^3.0.0:
   resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.6.5.tgz#c79e75f5e38dbc85a662d91eea52b8256d53b813"
   integrity sha512-lacdXOimsiD0QyNf9BC/mxivNJ/ybBGJXQFKzRekp1WTHoVUWsUHEn+2T8GJAzzIhyOuXA+gOxCVN3l+5PLPUA==
 
-cors@~2.8.5:
+cors@2.8.5, cors@~2.8.5:
   version "2.8.5"
   resolved "https://registry.yarnpkg.com/cors/-/cors-2.8.5.tgz#eac11da51592dd86b9f06f6e7ac293b3df875d29"
   integrity sha512-KIHbLJqu73RGr/hnbrO9uBeixNGuvSQjul/jdFvS/KFSIH1hWVd1ng7zOHx+YrEfInLG7q4n6GHQ9cDtxv/P6g==
@@ -1390,7 +1383,18 @@ http-assert@^1.3.0:
     deep-equal "~1.0.1"
     http-errors "~1.7.2"
 
-http-errors@^1.6.3, http-errors@~1.7.2:
+http-errors@^1.6.3:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/http-errors/-/http-errors-1.8.0.tgz#75d1bbe497e1044f51e4ee9e704a62f28d336507"
+  integrity sha512-4I8r0C5JDhT5VkvI47QktDW75rNlGVsUf/8hzjCC/wkWI/jdTRmBb9aI7erSG82r1bjKY3F6k28WnsVxB1C73A==
+  dependencies:
+    depd "~1.1.2"
+    inherits "2.0.4"
+    setprototypeof "1.2.0"
+    statuses ">= 1.5.0 < 2"
+    toidentifier "1.0.0"
+
+http-errors@~1.7.2:
   version "1.7.3"
   resolved "https://registry.yarnpkg.com/http-errors/-/http-errors-1.7.3.tgz#6c619e4f9c60308c38519498c14fbb10aacebb06"
   integrity sha512-ZTTX0MWrsQ2ZAhA1cejAwDLycFsd7I7nVtnkT3Ol0aqodaKW+0CTZDQ1uBv5whptCnc8e8HeRRJxRs0kmm/Qfw==
@@ -2129,6 +2133,11 @@ setprototypeof@1.1.1:
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.1.1.tgz#7e95acb24aa92f5885e0abef5ba131330d4ae683"
   integrity sha512-JvdAWfbXeIGaZ9cILp38HntZSFSo3mWg6xGcJJsd+d4aRMOqauag1C63dJfDw7OaMYwEbHMOxEZ1lqVRYP2OAw==
 
+setprototypeof@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.2.0.tgz#66c9a24a73f9fc28cbe66b09fed3d33dcaf1b424"
+  integrity sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==
+
 shebang-command@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/shebang-command/-/shebang-command-1.2.0.tgz#44aac65b695b03398968c39f363fee5deafdf1ea"
@@ -2499,11 +2508,6 @@ vscode-languageserver-types@^3.15.1:
   version "3.15.1"
   resolved "https://registry.yarnpkg.com/vscode-languageserver-types/-/vscode-languageserver-types-3.15.1.tgz#17be71d78d2f6236d414f0001ce1ef4d23e6b6de"
   integrity sha512-+a9MPUQrNGRrGU630OGbYVQ+11iOIovjCkqxajPa9w57Sd5ruK8WQNsslzpa0x/QJqC8kRc2DUxWjIFwoNm4ZQ==
-
-web-vitals@1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/web-vitals/-/web-vitals-1.1.2.tgz#06535308168986096239aa84716e68b4c6ae6d1c"
-  integrity sha512-PFMKIY+bRSXlMxVAQ+m2aw9c/ioUYfDgrYot0YUa+/xa0sakubWhSDyxAKwzymvXVdF4CZI71g06W+mqhzu6ig==
 
 which@^1.2.9:
   version "1.3.1"

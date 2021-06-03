@@ -1,17 +1,11 @@
 import { App } from "@tinyhttp/app";
-import { cors } from "@tinyhttp/cors";
+import cors from "cors";
 import { json } from "milliparsec";
 import * as events from "events";
 import * as crypto from "crypto";
-import {
-  subscribe,
-  specifiedRules,
-  parse,
-  validate,
-  ExecutionArgs,
-} from "graphql";
+import { ExecutionArgs, specifiedRules } from "graphql";
 import * as http from "http";
-import ws from "ws";
+import * as ws from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { InMemoryLiveQueryStore } from "@n1ru4l/in-memory-live-query-store";
 import { NoLiveMixedWithDeferStreamRule } from "@n1ru4l/graphql-live-query";
@@ -19,11 +13,23 @@ import { schema } from "./schema";
 import { getGraphQLParameters, processRequest } from "graphql-helix";
 import { Server as IOServer } from "socket.io";
 import { registerSocketIOGraphQLServer } from "@n1ru4l/socket-io-graphql-server";
+import { envelop } from "@envelop/core";
+import {
+  useExtendedValidation,
+  OneOfInputObjectsRule,
+} from "@envelop/extended-validation";
+
+const getEnveloped = envelop({
+  // Enable oneOf
+  plugins: [useExtendedValidation({ rules: [OneOfInputObjectsRule] })],
+});
+
+const { execute, subscribe, validate, parse } = getEnveloped();
 
 const app = new App();
 
 const eventEmitter = new events.EventEmitter();
-const liveQueryStore = new InMemoryLiveQueryStore();
+const liveQueryStore = new InMemoryLiveQueryStore({ execute });
 
 // small live query demonstration setup
 const greetings = ["Hello", "Hi", "Ay", "Sup"];
@@ -44,106 +50,110 @@ const context = {
 
 const validationRules = [...specifiedRules, NoLiveMixedWithDeferStreamRule];
 
-app.use(cors());
-app.use(json());
-app.use("/graphql", async (req, res) => {
-  // Create a generic Request object that can be consumed by Graphql Helix's API
-  const request = {
-    body: req.body,
-    headers: req.headers,
-    method: req.method ?? "GET",
-    query: req.query,
-  };
+app
+  .use(json())
+  .use(cors({ origin: "*" }))
+  .options("*", cors({ origin: "*" }))
+  .use("/graphql", async (req, res) => {
+    // Create a generic Request object that can be consumed by Graphql Helix's API
+    const request = {
+      body: req.body,
+      headers: req.headers,
+      method: req.method ?? "GET",
+      query: req.query,
+    };
 
-  // Extract the GraphQL parameters from the request
-  const { operationName, query, variables } = getGraphQLParameters(request);
+    // Extract the GraphQL parameters from the request
+    const { operationName, query, variables } = getGraphQLParameters(request);
 
-  // Validate and execute the query
-  const result = await processRequest({
-    operationName,
-    query,
-    variables,
-    request,
-    schema,
-    contextFactory: () => context,
-    execute: liveQueryStore.execute,
-    validationRules,
+    // Validate and execute the query
+    const result = await processRequest({
+      operationName,
+      query,
+      variables,
+      request,
+      schema,
+      contextFactory: () => context,
+      execute: liveQueryStore.execute,
+      validationRules,
+    });
+
+    // processRequest returns one of three types of results depending on how the server should respond
+    // 1) RESPONSE: a regular JSON payload
+    // 2) MULTIPART RESPONSE: a multipart response (when @stream or @defer directives are used)
+    // 3) PUSH: a stream of events to push back down the client for a subscription
+    if (result.type === "RESPONSE") {
+      // We set the provided status and headers and just the send the payload back to the client
+      result.headers.forEach(({ name, value }) => res.setHeader(name, value));
+      res.status(result.status);
+      res.json(result.payload);
+      return;
+    }
+
+    if (result.type === "MULTIPART_RESPONSE") {
+      // Indicate we're sending a multipart response
+      res.writeHead(200, {
+        Connection: "keep-alive",
+        "Content-Type": 'multipart/mixed; boundary="-"',
+        "Transfer-Encoding": "chunked",
+      });
+
+      // If the request is closed by the client, we unsubscribe and stop executing the request
+      req.on("close", () => {
+        result.unsubscribe();
+      });
+
+      // We can assume a part be sent, either error, or payload;
+      res.write("---");
+
+      // Subscribe and send back each result as a separate chunk. We await the subscribe
+      // call. Once we're done executing the request and there are no more results to send
+      // to the client, the Promise returned by subscribe will resolve and we can end the response.
+      await result.subscribe((result) => {
+        const chunk = Buffer.from(JSON.stringify(result), "utf8");
+        const data = [
+          "",
+          "Content-Type: application/json; charset=utf-8",
+          "",
+          chunk,
+        ];
+        if (result.hasNext) {
+          data.push("---");
+        }
+        res.write(data.join("\r\n"));
+      });
+
+      res.write("\r\n-----\r\n");
+      res.end();
+    } else {
+      // Indicate we're sending an event stream to the client
+      res.writeHead(200, {
+        "Content-Type": "text/event-stream",
+        Connection: "keep-alive",
+        "Cache-Control": "no-cache",
+      });
+
+      // If the request is closed by the client, we unsubscribe and stop executing the request
+      req.on("close", () => {
+        result.unsubscribe();
+      });
+
+      // We subscribe to the event stream and push any new events to the client
+      await result.subscribe((result) => {
+        res.write(`data: ${JSON.stringify(result)}\n\n`);
+      });
+    }
   });
-
-  // processRequest returns one of three types of results depending on how the server should respond
-  // 1) RESPONSE: a regular JSON payload
-  // 2) MULTIPART RESPONSE: a multipart response (when @stream or @defer directives are used)
-  // 3) PUSH: a stream of events to push back down the client for a subscription
-  if (result.type === "RESPONSE") {
-    // We set the provided status and headers and just the send the payload back to the client
-    result.headers.forEach(({ name, value }) => res.setHeader(name, value));
-    res.status(result.status);
-    res.json(result.payload);
-    return;
-  }
-
-  if (result.type === "MULTIPART_RESPONSE") {
-    // Indicate we're sending a multipart response
-    res.writeHead(200, {
-      Connection: "keep-alive",
-      "Content-Type": 'multipart/mixed; boundary="-"',
-      "Transfer-Encoding": "chunked",
-    });
-
-    // If the request is closed by the client, we unsubscribe and stop executing the request
-    req.on("close", () => {
-      result.unsubscribe();
-    });
-
-    // We can assume a part be sent, either error, or payload;
-    res.write("---");
-
-    // Subscribe and send back each result as a separate chunk. We await the subscribe
-    // call. Once we're done executing the request and there are no more results to send
-    // to the client, the Promise returned by subscribe will resolve and we can end the response.
-    await result.subscribe((result) => {
-      const chunk = Buffer.from(JSON.stringify(result), "utf8");
-      const data = [
-        "",
-        "Content-Type: application/json; charset=utf-8",
-        "",
-        chunk,
-      ];
-      if (result.hasNext) {
-        data.push("---");
-      }
-      res.write(data.join("\r\n"));
-    });
-
-    res.write("\r\n-----\r\n");
-    res.end();
-  } else {
-    // Indicate we're sending an event stream to the client
-    res.writeHead(200, {
-      "Content-Type": "text/event-stream",
-      Connection: "keep-alive",
-      "Cache-Control": "no-cache",
-    });
-
-    // If the request is closed by the client, we unsubscribe and stop executing the request
-    req.on("close", () => {
-      result.unsubscribe();
-    });
-
-    // We subscribe to the event stream and push any new events to the client
-    await result.subscribe((result) => {
-      res.write(`data: ${JSON.stringify(result)}\n\n`);
-    });
-  }
-});
 
 const PORT = 4000;
 
 const httpServer = app.listen(PORT, () => {
-  console.log(`GraphQL Server listening on port ${PORT}.`);
+  console.log(`GraphQL Server listening on http://localhost:${PORT}/graphql`);
 });
 
-const wsServer = new ws.Server({
+// ws is not a ECMA module
+// @ts-ignore
+const wsServer = new ws.default.Server({
   server: httpServer,
   path: "/graphql",
 });
@@ -153,6 +163,7 @@ const graphqlWs = useServer(
   {
     execute: liveQueryStore.execute,
     subscribe,
+    validate,
     onSubscribe: (_, msg) => {
       const args: ExecutionArgs = {
         schema,
@@ -193,6 +204,9 @@ registerSocketIOGraphQLServer({
   socketServer: ioServer,
   getParameter: () => ({
     execute: liveQueryStore.execute,
+    parse,
+    validate,
+    subscribe,
     // Overwrite validate and use our custom validation rules.
     validationRules,
     graphQLExecutionParameter: {
