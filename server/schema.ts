@@ -60,7 +60,7 @@ const Query = new GraphQLObjectType({
 });
 
 const GraphQLLogEventInputType = new GraphQLInputObjectType({
-  name: "Event",
+  name: "EventInput",
   fields: {
     stringEvent: {
       type: GraphQLString,
