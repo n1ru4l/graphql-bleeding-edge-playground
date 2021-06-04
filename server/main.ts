@@ -1,5 +1,5 @@
 import { App } from "@tinyhttp/app";
-import cors from "cors";
+import { cors } from "@tinyhttp/cors";
 import { json } from "milliparsec";
 import * as events from "events";
 import * as crypto from "crypto";
@@ -52,8 +52,7 @@ const validationRules = [...specifiedRules, NoLiveMixedWithDeferStreamRule];
 
 app
   .use(json())
-  .use(cors({ origin: "*" }))
-  .options("*", cors({ origin: "*" }))
+  .use(cors({ allowedHeaders: ["content-type"] }))
   .use("/graphql", async (req, res) => {
     // Create a generic Request object that can be consumed by Graphql Helix's API
     const request = {
