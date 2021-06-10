@@ -1,35 +1,20 @@
-import { App } from "@tinyhttp/app";
-import { cors } from "@tinyhttp/cors";
-import { json } from "milliparsec";
-import * as events from "events";
+import App from "express";
+import { CreateApp, InferFunctionReturn } from "graphql-ez/express";
+import { Server as IOServer } from "socket.io";
+import { registerSocketIOGraphQLServer } from "@n1ru4l/socket-io-graphql-server";
 import * as crypto from "crypto";
-import { ExecutionArgs, specifiedRules } from "graphql";
+import * as events from "events";
 import * as http from "http";
-import * as ws from "ws";
-import { useServer } from "graphql-ws/lib/use/ws";
 import { InMemoryLiveQueryStore } from "@n1ru4l/in-memory-live-query-store";
 import { NoLiveMixedWithDeferStreamRule } from "@n1ru4l/graphql-live-query";
 import { schema } from "./schema";
-import { getGraphQLParameters, processRequest } from "graphql-helix";
-import { Server as IOServer } from "socket.io";
-import { registerSocketIOGraphQLServer } from "@n1ru4l/socket-io-graphql-server";
-import { envelop } from "@envelop/core";
 import {
   useExtendedValidation,
   OneOfInputObjectsRule,
 } from "@envelop/extended-validation";
 
-const getEnveloped = envelop({
-  // Enable oneOf
-  plugins: [useExtendedValidation({ rules: [OneOfInputObjectsRule] })],
-});
-
-const { execute, subscribe, validate, parse } = getEnveloped();
-
-const app = new App();
-
 const eventEmitter = new events.EventEmitter();
-const liveQueryStore = new InMemoryLiveQueryStore({ execute });
+const liveQueryStore = new InMemoryLiveQueryStore();
 
 // small live query demonstration setup
 const greetings = ["Hello", "Hi", "Ay", "Sup"];
@@ -43,186 +28,86 @@ const randomHashInterval = setInterval(() => {
   eventEmitter.emit("randomHash", crypto.randomBytes(20).toString("hex"));
 }, 1000);
 
-const context = {
-  greetings,
-  eventEmitter,
-};
+function buildContext() {
+  return {
+    greetings,
+    eventEmitter,
+  };
+}
 
-const validationRules = [...specifiedRules, NoLiveMixedWithDeferStreamRule];
+declare module "graphql-ez/express" {
+  interface EnvelopContext extends InferFunctionReturn<typeof buildContext> {}
+}
 
-app
-  .use(json())
-  .use(cors({ allowedHeaders: ["content-type"] }))
-  .use("/graphql", async (req, res) => {
-    // Create a generic Request object that can be consumed by Graphql Helix's API
-    const request = {
-      body: req.body,
-      headers: req.headers,
-      method: req.method ?? "GET",
-      query: req.query,
-    };
-
-    // Extract the GraphQL parameters from the request
-    const { operationName, query, variables } = getGraphQLParameters(request);
-
-    // Validate and execute the query
-    const result = await processRequest({
-      operationName,
-      query,
-      variables,
-      request,
-      schema,
-      contextFactory: () => context,
-      execute: liveQueryStore.execute,
-      validationRules,
-    });
-
-    // processRequest returns one of three types of results depending on how the server should respond
-    // 1) RESPONSE: a regular JSON payload
-    // 2) MULTIPART RESPONSE: a multipart response (when @stream or @defer directives are used)
-    // 3) PUSH: a stream of events to push back down the client for a subscription
-    if (result.type === "RESPONSE") {
-      // We set the provided status and headers and just the send the payload back to the client
-      result.headers.forEach(({ name, value }) => res.setHeader(name, value));
-      res.status(result.status);
-      res.json(result.payload);
-      return;
-    }
-
-    if (result.type === "MULTIPART_RESPONSE") {
-      // Indicate we're sending a multipart response
-      res.writeHead(200, {
-        Connection: "keep-alive",
-        "Content-Type": 'multipart/mixed; boundary="-"',
-        "Transfer-Encoding": "chunked",
-      });
-
-      // If the request is closed by the client, we unsubscribe and stop executing the request
-      req.on("close", () => {
-        result.unsubscribe();
-      });
-
-      // We can assume a part be sent, either error, or payload;
-      res.write("---");
-
-      // Subscribe and send back each result as a separate chunk. We await the subscribe
-      // call. Once we're done executing the request and there are no more results to send
-      // to the client, the Promise returned by subscribe will resolve and we can end the response.
-      await result.subscribe((result) => {
-        const chunk = Buffer.from(JSON.stringify(result), "utf8");
-        const data = [
-          "",
-          "Content-Type: application/json; charset=utf-8",
-          "",
-          chunk,
-        ];
-        if (result.hasNext) {
-          data.push("---");
-        }
-        res.write(data.join("\r\n"));
-      });
-
-      res.write("\r\n-----\r\n");
-      res.end();
-    } else {
-      // Indicate we're sending an event stream to the client
-      res.writeHead(200, {
-        "Content-Type": "text/event-stream",
-        Connection: "keep-alive",
-        "Cache-Control": "no-cache",
-      });
-
-      // If the request is closed by the client, we unsubscribe and stop executing the request
-      req.on("close", () => {
-        result.unsubscribe();
-      });
-
-      // We subscribe to the event stream and push any new events to the client
-      await result.subscribe((result) => {
-        res.write(`data: ${JSON.stringify(result)}\n\n`);
-      });
-    }
-  });
-
-const PORT = 4000;
-
-const httpServer = app.listen(PORT, () => {
-  console.log(`GraphQL Server listening on http://localhost:${PORT}/graphql`);
-});
-
-// ws is not a ECMA module
-// @ts-ignore
-const wsServer = new ws.default.Server({
-  server: httpServer,
-  path: "/graphql",
-});
-
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const graphqlWs = useServer(
-  {
-    execute: liveQueryStore.execute,
-    subscribe,
-    validate,
-    onSubscribe: (_, msg) => {
-      const args: ExecutionArgs = {
-        schema,
-        operationName: msg.payload.operationName,
-        document:
-          typeof msg.payload.query === "object"
-            ? msg.payload.query
-            : parse(msg.payload.query),
-        variableValues: msg.payload.variables,
-        contextValue: context,
-      };
-
-      // don't forget to validate when returning custom execution args!
-      const errors = validate(args.schema, args.document, validationRules);
-      if (errors.length > 0) {
-        return errors; // return `GraphQLError[]` to send `ErrorMessage` and stop subscription
-      }
-
-      return args;
-    },
-    onError: (_, err) => {
-      console.error(err);
-    },
+export const { registerModule, buildApp } = CreateApp({
+  schema,
+  buildContext,
+  websockets: {
+    graphQLWS: true,
+    subscriptionsTransport: false,
   },
-  wsServer
-);
-
-// We also spin up a Socket.io server that serves the GraphQL schema
-
-const socketIoHttpServer = http.createServer();
-const ioServer = new IOServer(socketIoHttpServer, {
-  cors: {
-    origin: "*",
+  ide: {
+    altair: false,
+    graphiql: false,
   },
-});
-
-registerSocketIOGraphQLServer({
-  socketServer: ioServer,
-  getParameter: () => ({
-    execute: liveQueryStore.execute,
-    parse,
-    validate,
-    subscribe,
-    // Overwrite validate and use our custom validation rules.
-    validationRules,
-    graphQLExecutionParameter: {
-      schema,
-      contextValue: context,
+  plugins: [
+    useExtendedValidation({ rules: [OneOfInputObjectsRule] }),
+    /* Live Query Plugin :) */
+    {
+      onValidate: ({ addValidationRule }) => {
+        addValidationRule(NoLiveMixedWithDeferStreamRule);
+      },
+      onExecute: ({ executeFn, setExecuteFn }) => {
+        setExecuteFn(liveQueryStore.makeExecute(executeFn));
+      },
     },
-  }),
+  ],
+  cors: true,
 });
-
-socketIoHttpServer.listen(4001);
 
 process.once("SIGINT", () => {
   clearInterval(shuffleGreetingsInterval);
   clearInterval(randomHashInterval);
   console.log("Received SIGINT. Shutting down HTTP and Websocket server.");
-  graphqlWs.dispose();
-  httpServer.close();
-  ioServer.close();
-  socketIoHttpServer.close();
+});
+
+const app = App();
+
+const PORT = 4000;
+
+buildApp({
+  app,
+}).then((EnvelopApp) => {
+  app.use(EnvelopApp.router);
+
+  app.listen(PORT, () => {
+    console.log(`Listening on port ${PORT}!`);
+  });
+
+  const { parse, validate, subscribe } = EnvelopApp.getEnveloped();
+
+  // // We also spin up a Socket.io server that serves the GraphQL schema
+
+  const socketIoHttpServer = http.createServer();
+  const ioServer = new IOServer(socketIoHttpServer, {
+    cors: {
+      origin: "*",
+    },
+  });
+
+  registerSocketIOGraphQLServer({
+    socketServer: ioServer,
+    getParameter: () => ({
+      execute: liveQueryStore.execute,
+      parse,
+      validate,
+      subscribe,
+      graphQLExecutionParameter: {
+        schema,
+        contextValue: buildContext(),
+      },
+    }),
+  });
+
+  socketIoHttpServer.listen(4001);
 });
