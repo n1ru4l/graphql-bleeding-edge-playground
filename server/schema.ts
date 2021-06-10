@@ -54,7 +54,10 @@ const Query = new GraphQLObjectType({
     },
     greetings: {
       type: GraphQLList(GraphQLString),
-      resolve: (_, __, context) => context.greetings,
+      resolve: (_, __, context) => {
+        // console.log(context);
+        return context.greetings;
+      },
     },
   },
 });
