@@ -1729,10 +1729,10 @@ micromatch@^4.0.2:
     braces "^3.0.1"
     picomatch "^2.0.5"
 
-milliparsec@2.0.5:
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/milliparsec/-/milliparsec-2.0.5.tgz#45ee3d98519dab78267097991a14dc0953ce29dc"
-  integrity sha512-5AHZnZ0sFblCHlhb72g03TXX9rdiRzrZOTq6h+jimOrajHNG/0e6bSMugtO7Y8Blx8pUoxy+BhoVbNiQy+eQYA==
+milliparsec@2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/milliparsec/-/milliparsec-2.1.1.tgz#5826a504210ed10281cb34db3bc997e420ad1a2e"
+  integrity sha512-ehIavlhsx66CWKalkaEzNP0J9JkwPuwrZ/BZ64eI/eQ9g29XH4kiryJYx143y7+240833KGqUSYx7QQXs6Enzg==
   optionalDependencies:
     koa "^2.13.1"
 
