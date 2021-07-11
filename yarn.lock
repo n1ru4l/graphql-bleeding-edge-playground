@@ -392,10 +392,10 @@
     es-mime-types "^0.0.16"
     negotiator "^0.6.2"
 
-"@tinyhttp/app@1.3.11":
-  version "1.3.11"
-  resolved "https://registry.yarnpkg.com/@tinyhttp/app/-/app-1.3.11.tgz#acc2bc6bfbb39bf65a5fde7124e4f7a5dfbcf93f"
-  integrity sha512-CDQZhHXMjxseZ0VC73IcJb6Hh2C0+di9OznynMYOikG0fgCAAPRpBeHyp5vtMgfs/CzNIRZjr71JAqivpaAwXw==
+"@tinyhttp/app@1.3.14":
+  version "1.3.14"
+  resolved "https://registry.yarnpkg.com/@tinyhttp/app/-/app-1.3.14.tgz#e9fa68dae2d16bebd146e11067f96ea18476837b"
+  integrity sha512-02Aq64FO+GefqgrB6bGwxaRaQuJ9FgCD3x97ajWlnCUtkRILZqiaXLJPzU96IBOKwRvMC64dY1DlGTif5GFLKg==
   dependencies:
     "@tinyhttp/cookie" "1.3.0"
     "@tinyhttp/proxy-addr" "1.3.0"
