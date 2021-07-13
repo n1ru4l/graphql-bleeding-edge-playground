@@ -249,10 +249,10 @@
   dependencies:
     "@envelop/types" "0.1.4"
 
-"@envelop/extended-validation@0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@envelop/extended-validation/-/extended-validation-0.2.1.tgz#3f847c2d457fafd7f5cf072fe77660ea84cbe4d1"
-  integrity sha512-/wbdnBanXJfpZsbBN8qQGD8Z32Y4FZN5DVn3QguvSbUyeuOtAVATNZxs1FoEqcxnW1mgjeIDHTDzq0vhgwDVXw==
+"@envelop/extended-validation@0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@envelop/extended-validation/-/extended-validation-0.2.2.tgz#690c6847a9dc95f5c20dd6e237a58f70cb600c1f"
+  integrity sha512-Aaur+qcxkL7b8pu91cZZ9Wav1DktG6cOPRmuA3mgjXaTqGq8vFhpvdEU4hb0XYjkciW8oYOZPLc+EKBcO2ipdg==
 
 "@envelop/types@0.1.4":
   version "0.1.4"
