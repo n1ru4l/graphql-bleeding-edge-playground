@@ -242,22 +242,22 @@
     "@babel/helper-validator-identifier" "^7.14.5"
     to-fast-properties "^2.0.0"
 
-"@envelop/core@0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@envelop/core/-/core-0.2.1.tgz#194fba6202d3b4b071152d79fe89e526a2d36c08"
-  integrity sha512-91ECIjmp+DSI/PnqOi8xBiQlqfa4PyvTQHUhkAKXFowRnN78ScvW7dRp+1f5C9cjLby8O/tDkOb2YQCBXdmuXQ==
+"@envelop/core@0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@envelop/core/-/core-0.5.2.tgz#76bb5e5d4c2f06c3e599eea45d68444a87765d05"
+  integrity sha512-WQ9UvfFjdnOS7EaY2tDJPJYpcNTtz0HTaNBbddTNhT8hk8He5OTEtTL4kTJc+IU2fk0pREkn8hvsld4BUQpnVA==
   dependencies:
-    "@envelop/types" "0.1.4"
+    "@envelop/types" "0.4.2"
 
 "@envelop/extended-validation@0.2.2":
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@envelop/extended-validation/-/extended-validation-0.2.2.tgz#690c6847a9dc95f5c20dd6e237a58f70cb600c1f"
   integrity sha512-Aaur+qcxkL7b8pu91cZZ9Wav1DktG6cOPRmuA3mgjXaTqGq8vFhpvdEU4hb0XYjkciW8oYOZPLc+EKBcO2ipdg==
 
-"@envelop/types@0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@envelop/types/-/types-0.1.4.tgz#dd0672ee12d11cd09f3369fca7acde28976baea0"
-  integrity sha512-sXVv1u3qpm+LDT/Rr/z5Abome4ayoisUSkyRRgvQrhqysg5W1WWDaUzGtqvrw//nkfFUsolAVSHPDAUWcDbppQ==
+"@envelop/types@0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@envelop/types/-/types-0.4.2.tgz#0efd62a84d15d4090655b87f4e146366b063ae59"
+  integrity sha512-WZcTSDReryyg/3q6S4DTFttcuvU8jedcVhZmTp2WRyi8k15YqkorWkZzlrO5DoHNHMRUeckJcQNt68hPv7uv7A==
 
 "@graphiql/toolkit@^0.2.0":
   version "0.2.0"
