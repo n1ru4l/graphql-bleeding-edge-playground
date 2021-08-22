@@ -416,12 +416,12 @@
   resolved "https://registry.yarnpkg.com/@tinyhttp/cookie/-/cookie-1.3.0.tgz#5a13051da80a0e340894dd3b69faa7307a7bffec"
   integrity sha512-4ZVfP8WApV9ZRchv/1i0QiKdP0wxWTUNv4ZsMQrqK0p1KXA0/SvpYUTS6bp1E6Yo0dNxcKte4wJ4FCWFDcShhQ==
 
-"@tinyhttp/cors@1.3.2":
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/@tinyhttp/cors/-/cors-1.3.2.tgz#fa7fcba84cbf772efcd853632000ba15bbee713a"
-  integrity sha512-5JDStRqUXS0qL/F58tLd770Qa5ozAUgCRasRn4y5giDu9VrxVOWB68RcdPLJb84JioS9e4Kgev6v/HadkD5h3w==
+"@tinyhttp/cors@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@tinyhttp/cors/-/cors-2.0.0.tgz#596047e5603335ca42be1b0318f7b58d30090413"
+  integrity sha512-IwQsPBnK+gRrhTsPA4FPOfbNzZZt8cVsOIMNFb6HzoScaiWcoLEogL0Bz/aBSm8KM13uieVXoVT6udMqhqUS2A==
   dependencies:
-    es-vary "^0.0.8"
+    es-vary "^0.1.1"
 
 "@tinyhttp/encode-url@0.3.0":
   version "0.3.0"
@@ -1075,6 +1075,11 @@ es-vary@^0.0.8:
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/es-vary/-/es-vary-0.0.8.tgz#4dc62235dda14e51e16b6690e564a9e5d40e3df0"
   integrity sha512-fiERjQiCHrXUAToNRT/sh7MtXnfei9n7cF9oVQRUEp9L5BGXsTKSPaXq8L+4v0c/ezfvuTWd/f0JSl5IBRUvSg==
+
+es-vary@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/es-vary/-/es-vary-0.1.1.tgz#7715e1198d603b7ed8369c0e14e1f462dfbcc0d3"
+  integrity sha512-4UOWrTu8lz5otSyWxcS0LbYz8WyYOEiWHGkBIu0VfhTsY+vtc7+fOSDHsxtEUBeu7mDnTwqsKg5NEXeq5Da1Hg==
 
 esbuild@^0.12.17:
   version "0.12.20"
