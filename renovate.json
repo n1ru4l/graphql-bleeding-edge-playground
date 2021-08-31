@@ -10,6 +10,10 @@
     {
       "groupName": "n1ru4l packages",
       "packagePatterns": ["^@n1ru4l/"]
+    },
+    {
+     "groupName": "tinyhttp",
+      "packagePatterns": ["^@tinyhttp/"]
     }
   ]
 }
