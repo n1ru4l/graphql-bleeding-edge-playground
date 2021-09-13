@@ -43,7 +43,7 @@
     "graphql-helix": "1.7.0",
     "graphql-ws": "5.5.0",
     "socket.io": "4.2.0",
-    "ws": "8.2.1"
+    "ws": "8.2.2"
   },
   "scripts": {
     "start": "vite",
