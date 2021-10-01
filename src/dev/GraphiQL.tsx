@@ -27,7 +27,7 @@ const ioFetcher = (graphQLParams: FetcherParams) =>
   ioGraphQLClient.execute({ ...graphQLParams, operation: graphQLParams.query });
 
 const wsClient = createClient({
-  url: "ws://localhost:4000/graphql",
+  url: import.meta.env.VITE_WS_URL,
   lazy: false,
 });
 
@@ -54,7 +54,7 @@ const httpMultipartFetcher = async (
 
     return makeAsyncIterableIteratorFromSink<FetcherResult>((sink) => {
       const subscription = new SSESubscription({
-        url: "http://localhost:4000/graphql",
+        url: import.meta.env.VITE_GRAPHQL_SERVER_URL,
         searchParams,
         onNext: (value) => {
           sink.next(JSON.parse(value));
@@ -67,7 +67,7 @@ const httpMultipartFetcher = async (
     });
   }
 
-  const patches = await fetch("http://localhost:4000/graphql", {
+  const patches = await fetch(import.meta.env.VITE_GRAPHQL_SERVER_URL, {
     method: "POST",
     body: JSON.stringify(graphQLParams),
     headers: {
@@ -159,7 +159,7 @@ const defaultQuery = /* GraphQL */ `
     randomHash
   }
 
-  # 
+  #
   # Query using @defer
   #
   # defer can be used on fragments in order to defer sending a part of the result to the client,
@@ -218,7 +218,7 @@ const defaultQuery = /* GraphQL */ `
   #
   # OneOf input types allow polymorphic input fields. They are currently in the RFC stage. https://github.com/graphql/graphql-spec/pull/825
   # The @envelop/extended-validation plugin allows using the feature today! https://github.com/dotansimha/envelop/tree/main/packages/plugins/extended-validation
-  # 
+  #
   # The input type LogEvent type is marked as a oneOf type. Therefore, the validation of the operation only passes if the input has either a stringEvent or booleanEvent key.
   # Providing both or neither would result in a validation error.
   #
