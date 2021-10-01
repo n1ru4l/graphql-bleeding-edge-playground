@@ -150,9 +150,7 @@ const httpServer = app.listen(PORT, () => {
   console.log(`GraphQL Server listening on http://localhost:${PORT}/graphql`);
 });
 
-// ws is not a ECMA module
-// @ts-ignore
-const wsServer = new ws.default.Server({
+const wsServer = new ws.WebSocketServer({
   server: httpServer,
   path: "/graphql",
 });
