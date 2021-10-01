@@ -51,6 +51,6 @@ Execute some operations :)
 
 ## Custom server url
 
-You can point to your own/custom graphql sever by editing the variables in your `.env.development` file.
+You can point to your own/custom graphql sever by editing the variables in your `.env` file.
 - The `VITE_WS_URL` env variable points to your websocket connection url
 - The `VITE_GRAPHQL_SERVER_URL` env variable points to your graphql server url
