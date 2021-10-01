@@ -32,7 +32,7 @@
     "vite": "2.6.2"
   },
   "dependencies": {
-    "@envelop/core": "1.0.4",
+    "@envelop/core": "1.2.0",
     "@envelop/extended-validation": "1.1.1",
     "@n1ru4l/graphql-live-query": "0.8.1",
     "@n1ru4l/in-memory-live-query-store": "0.7.2",
