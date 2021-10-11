@@ -247,22 +247,22 @@
   dependencies:
     "@cspotcode/source-map-consumer" "0.8.0"
 
-"@envelop/core@1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@envelop/core/-/core-1.0.4.tgz#c5099fce98194598aecf7d81a87c1e3324e10ffa"
-  integrity sha512-+P2EZfQgyRuWqR8ErzHCO2kXj3wrHQJZC8IFxfiJh1H6PGJs3Fgary14E93gCNW7RLaXApeACRGhlrC/njk73Q==
+"@envelop/core@1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@envelop/core/-/core-1.2.0.tgz#4a912d990ec896822dd88d7d5757c6a28778670b"
+  integrity sha512-bVsxJuMleyeq0CI3tWq+bLtyEhf1mbGeu7rK/ZGCAkvFqLbt+dHsh28LSSKk4vcwRpa6AQpJZTQYpo4VjRmZ9Q==
   dependencies:
-    "@envelop/types" "1.0.2"
+    "@envelop/types" "1.1.0"
 
 "@envelop/extended-validation@1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@envelop/extended-validation/-/extended-validation-1.1.1.tgz#d17f35c06a02d0430d75f54d192434fce8d5870a"
   integrity sha512-JcxnhuwFE66g/6ulcAb+ukk8JK0C6JsF2NAImftM1Y4ybAkDj6DPRdCPsoGYzuycNBQK8iC//Mx7ghnYP9w40w==
 
-"@envelop/types@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@envelop/types/-/types-1.0.2.tgz#c0eb58929209aa3c6563921a9fc58f63448c02fc"
-  integrity sha512-uL1Nn0aiDN72nEPvhJixH0DoCGxkPPW6/HZcl9lwnaVld1TDQhs72TVuX3vTsZQIvk2s62T5XsvrcdIbMkKfJw==
+"@envelop/types@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@envelop/types/-/types-1.1.0.tgz#14578b09de7b57cc6bec24a4d0442cebcf426e93"
+  integrity sha512-NswpqlmHmZSfPt1Uvkjq+21yD3sVVi6jCOE/JqN+ZFEHnVawCDT/nl1b1hq3QDkuhDjd9sRznE/EMuUhzhtvmA==
 
 "@graphiql/toolkit@^0.2.0":
   version "0.2.0"
