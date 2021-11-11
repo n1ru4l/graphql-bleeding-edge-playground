@@ -24,7 +24,7 @@
     "prettier": "2.4.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "socket.io-client": "4.2.0",
+    "socket.io-client": "4.3.2",
     "sse-z": "0.3.0",
     "ts-node": "10.2.1",
     "ts-node-dev": "1.1.8",
@@ -42,7 +42,7 @@
     "graphql": "15.4.0-experimental-stream-defer.1",
     "graphql-helix": "1.8.3",
     "graphql-ws": "5.5.0",
-    "socket.io": "4.2.0",
+    "socket.io": "4.3.2",
     "ws": "8.2.3"
   },
   "scripts": {
