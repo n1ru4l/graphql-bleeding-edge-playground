@@ -1302,10 +1302,10 @@ graphiql@1.4.2:
     graphql-language-service "^3.1.2"
     markdown-it "^10.0.0"
 
-graphql-helix@1.9.1:
-  version "1.9.1"
-  resolved "https://registry.yarnpkg.com/graphql-helix/-/graphql-helix-1.9.1.tgz#7bbb0c78642604ef531649f14800154b83b1fb45"
-  integrity sha512-Of4iMFy+lesAF52RsgTlSUtgAlogWNQt8xp817fcgdJtGNO1bo4RPR4yXD5vZYHbw01Vm2fmaPOCUps5BJJSXw==
+graphql-helix@1.10.3:
+  version "1.10.3"
+  resolved "https://registry.yarnpkg.com/graphql-helix/-/graphql-helix-1.10.3.tgz#b9fd383fd1b56ec28b9364d871f0aed5a02d2717"
+  integrity sha512-DBWId8YgIGJQX8isjDoXsEB7qokXtkKRRKvz/f20yvrqnqemw4TQzFTEbtNthFJR8Su6LQmknUUV3eRuPJULTQ==
 
 graphql-language-service-interface@^2.8.2:
   version "2.8.2"
