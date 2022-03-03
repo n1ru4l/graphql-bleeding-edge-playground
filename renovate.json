@@ -12,8 +12,12 @@
       "packagePatterns": ["^@n1ru4l/"]
     },
     {
-     "groupName": "tinyhttp",
+      "groupName": "tinyhttp",
       "packagePatterns": ["^@tinyhttp/"]
+    },
+    {
+      "groupName": "envelop",
+      "packagePatterns": ["^@envelop/"]
     }
   ]
 }
