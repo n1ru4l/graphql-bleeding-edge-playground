@@ -254,10 +254,12 @@
   dependencies:
     "@envelop/types" "1.1.0"
 
-"@envelop/extended-validation@1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@envelop/extended-validation/-/extended-validation-1.1.1.tgz#d17f35c06a02d0430d75f54d192434fce8d5870a"
-  integrity sha512-JcxnhuwFE66g/6ulcAb+ukk8JK0C6JsF2NAImftM1Y4ybAkDj6DPRdCPsoGYzuycNBQK8iC//Mx7ghnYP9w40w==
+"@envelop/extended-validation@1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@envelop/extended-validation/-/extended-validation-1.4.0.tgz#35e906fb2f7d99704bd186096fb450631ee3f20e"
+  integrity sha512-WxJYQCLh1Wo4RO2saB7RZL8s3ni4DN6QMcn9OiPIGHg4mInAqIpFG7nIchFwEOQoW12M5lc0SZP45pneYOorUQ==
+  dependencies:
+    "@graphql-tools/utils" "^8.6.1"
 
 "@envelop/types@1.1.0":
   version "1.1.0"
@@ -275,10 +277,10 @@
   optionalDependencies:
     subscriptions-transport-ws "^0.9.18"
 
-"@graphql-tools/utils@^8.5.2":
-  version "8.5.2"
-  resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-8.5.2.tgz#fa775d92c19237f648105f7d4aeeeb63ba3d257f"
-  integrity sha512-wxA51td/759nQziPYh+HxE0WbURRufrp1lwfOYMgfK4e8Aa6gCa1P1p6ERogUIm423NrIfOVau19Q/BBpHdolw==
+"@graphql-tools/utils@^8.5.2", "@graphql-tools/utils@^8.6.1":
+  version "8.6.2"
+  resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-8.6.2.tgz#095408135f091aac68fe18a0a21b708e685500da"
+  integrity sha512-x1DG0cJgpJtImUlNE780B/dfp8pxvVxOD6UeykFH5rHes26S4kGokbgU8F1IgrJ1vAPm/OVBHtd2kicTsPfwdA==
   dependencies:
     tslib "~2.3.0"
 
