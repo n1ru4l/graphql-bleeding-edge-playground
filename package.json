@@ -18,7 +18,7 @@
     "cross-env": "7.0.3",
     "esm": "3.2.25",
     "graphiql": "1.4.2",
-    "meros": "1.1.4",
+    "meros": "1.3.0",
     "milliparsec": "2.2.0",
     "patch-package": "6.4.7",
     "prettier": "2.5.1",
